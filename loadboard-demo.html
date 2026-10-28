@@ -14,97 +14,15 @@
      closest free icon wherever the app uses a Pro-only one. Local copies with the gitignored
      vendor/fontawesome-pro folder switch back to the exact Pro icons (used for video renders). -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
-<script>
-  window.__ezUsePro = function () {
-    document.documentElement.classList.add('ezdemo-fa-pro');
-    const swap = () => document.querySelectorAll('[data-fa-pro]').forEach(i => {
-      i.classList.remove(i.dataset.faFree);
-      i.classList.add(i.dataset.faPro);
-    });
-    document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', swap) : swap();
-  };
-</script>
+<script src="kit/fa-switch.js"></script>
 <link rel="stylesheet" href="vendor/fontawesome-pro/css/all.css" onload="window.__ezUsePro && window.__ezUsePro()">
 <link rel="stylesheet" href="vendor/Site.css">
 <link rel="stylesheet" href="vendor/Bootstrap-Overrides.css">
 <link rel="stylesheet" href="vendor/Colors.css">
 <link rel="stylesheet" href="vendor/Colors.light.css">
 <link rel="stylesheet" href="vendor/jquery.timepicker.min.css">
-<style>
-  /* Copied from the app page's inline <style> block */
-  #pageHeader:not(.sticky-top) { z-index: 1030; }
-  .no-focus-border:focus { outline: none; border-color: transparent; box-shadow: none; }
-  .input_group_border { border: 1px solid var(--secondary); border-radius: 0.25rem; }
-  /* From the app's Syncfusion stylesheet (ej.web.all.min.css), the only rule this screen uses */
-  .e-ejinputtext { font-family: "Segoe UI", "Helvetica Neue", Ubuntu, Arial; padding-right: 4px; }
-</style>
-<style>
-  /* ---- Demo-only layer: nothing below is part of the EZ TMS UI ---- */
-  html, body { overflow: hidden; }
-
-  /* Chrome renders <input type="date"> in the viewer's locale; fake it so videos always show US mm/dd/yyyy */
-  .ezdemo-date::placeholder { color: #495057; opacity: 1; }
-  .ezdemo-cal { position: absolute; right: 27px; top: 11px; width: 15px; height: 16px; pointer-events: none; }
-
-  /* The app draws the header search/clear icons in Font Awesome Pro "regular" (weight 400); the free set has no regular magnifier */
-  html:not(.ezdemo-fa-pro) .navbar-search-btn i { font-weight: 900 !important; }
-
-  /* Hover/focus states the fake cursor can't trigger natively (values copied from Bootstrap 4.4.1) */
-  .btn-primary.is-hover { background-color: #0069d9; border-color: #0062cc; }
-  .form-control.is-focus { color: #495057; background-color: #fff; border-color: #80bdff; outline: 0; box-shadow: 0 0 0 .2rem rgba(0,123,255,.25); }
-
-  #ezdemoCursor { position: fixed; left: 0; top: 0; z-index: 100000; pointer-events: none; will-change: transform; }
-  #ezdemoCursor > * { position: absolute; left: 0; top: 0; display: none; }
-  #ezdemoCursor[data-mode="arrow"] .c-arrow,
-  #ezdemoCursor[data-mode="text"] .c-text,
-  #ezdemoCursor[data-mode="pointer"] .c-pointer { display: block; }
-  #ezdemoCursor .c-arrow { transform: translate(-5px, -3px); }
-  #ezdemoCursor .c-text { transform: translate(-12px, -12px); }
-  #ezdemoCursor .c-pointer { transform: translate(-7px, -1px); font-size: 21px; line-height: 1; }
-  #ezdemoCursor .c-pointer i { position: absolute; left: 0; top: 0; }
-  #ezdemoCursor.press { transition: none; }
-  #ezdemoCursor.press > * { scale: .88; }
-  /* Native <select> pop-up lookalikes */
-  .ezsel { position: fixed; z-index: 1200; overflow-y: auto; scrollbar-width: none; }
-  .ezsel::-webkit-scrollbar { display: none; }
-  .ezsel-item { white-space: nowrap; cursor: default; }
-  /* macOS menu (Chrome on Mac uses the system menu) */
-  .ezsel-mac { padding: 5px 0; border-radius: 7px; background: rgba(242, 242, 242, .82);
-    -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8);
-    box-shadow: 0 0 0 .5px rgba(0, 0, 0, .22), 0 10px 30px rgba(0, 0, 0, .25);
-    font: 13px/22px -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; color: #1d1d1f; }
-  .ezsel-mac .ezsel-item { position: relative; height: 22px; padding: 0 20px 0 26px; margin: 0 5px; border-radius: 4px; }
-  .ezsel-mac .ezsel-item.is-checked::before { content: "✓"; position: absolute; left: 9px; font-size: 12px; font-weight: 600; }
-  .ezsel-mac .ezsel-item.is-hover { background: #0a82ff; color: #fff; }
-  /* Chrome on Windows draws its own list */
-  .ezsel-win { background: #fff; border: 1px solid #767676; color: #000; box-shadow: 0 2px 6px rgba(0, 0, 0, .18); }
-  .ezsel-win .ezsel-item { padding: 1px 4px; line-height: 1.25; }
-  .ezsel-win .ezsel-item.is-hover { background: #0078d7; color: #fff; }
-
-  /* Chrome's date picker pop-up */
-  .ezcal { position: fixed; z-index: 1200; width: 246px; padding: 10px 10px 8px; background: #fff; color: #000;
-    border: 1px solid #767676; border-radius: 3px; box-shadow: 0 3px 10px rgba(0, 0, 0, .2);
-    font: 13px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; user-select: none; }
-  .ezcal-head { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 10px 4px; }
-  .ezcal-month { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; }
-  .ezcal-month svg { width: 8px; height: 5px; }
-  .ezcal-nav { display: flex; gap: 10px; color: #333; }
-  .ezcal-nav svg { width: 14px; height: 14px; }
-  .ezcal-week, .ezcal-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
-  .ezcal-week div { font-size: 12px; color: #000; padding-bottom: 6px; }
-  .ezcal-day { height: 28px; line-height: 28px; margin: 1px; border-radius: 2px; cursor: default; }
-  .ezcal-day.is-other { color: #8e8e8e; }
-  .ezcal-day.is-today { box-shadow: inset 0 0 0 1px #767676; }
-  .ezcal-day.is-hover { background: #e5e5e5; }
-  .ezcal-day.is-selected { background: #0075ff; color: #fff; box-shadow: none; }
-  .ezcal-foot { display: flex; justify-content: space-between; margin: 8px 4px 0; color: #0075ff; font-size: 13px; }
-
-  .ezdemo-render input, .ezdemo-render textarea { caret-color: transparent !important; }
-  #ezdemoCaret { position: fixed; display: none; width: 1px; background: #495057; z-index: 99998; pointer-events: none; }
-  .ezdemo-ring { position: fixed; z-index: 99999; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%;
-    border: 2px solid rgba(0,123,255,.6); pointer-events: none; animation: ezdemoRing .45s ease-out forwards; }
-  @keyframes ezdemoRing { from { transform: scale(.3); opacity: 1; } to { transform: scale(1.35); opacity: 0; } }
-</style>
+<link rel="stylesheet" href="vendor/app-inline.css">
+<link rel="stylesheet" href="kit/demo-kit.css">
 </head>
 <body>
 
@@ -577,495 +495,98 @@
   </div>
 </form>
 
-<!-- Demo cursor (not part of the product UI) -->
-<div id="ezdemoCursor" data-mode="arrow">
-  <svg class="c-arrow" width="24" height="26" viewBox="0 0 24 26"><path d="M5 3v16.2l4-3.8 2.6 6.1 2.9-1.2-2.6-6h5.6z" fill="#000" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
-  <svg class="c-text" width="24" height="24" viewBox="0 0 24 24"><path d="M8.5 4.5h2c.8 0 1.5.5 1.5.5s.7-.5 1.5-.5h2M8.5 19.5h2c.8 0 1.5-.5 1.5-.5s.7.5 1.5.5h2M12 5v14" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M8.5 4.5h2c.8 0 1.5.5 1.5.5s.7-.5 1.5-.5h2M8.5 19.5h2c.8 0 1.5-.5 1.5-.5s.7.5 1.5.5h2M12 5v14" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round"/></svg>
-  <span class="c-pointer"><i class="fas fa-hand-pointer" style="color:#fff"></i><i class="far fa-hand-pointer" style="color:#000"></i></span>
-</div>
 
+<script src="kit/demo-kit.js"></script>
 <script>
 (() => {
-  const params = new URLSearchParams(location.search);
-  const LOOP = params.get('loop') !== '0';
-  const SHOW_CLICKS = params.get('clicks') !== '0';
-  const SPEED = parseFloat(params.get('speed') || '1');
-  // render=1: driven frame by frame by the video renderer (virtual clock, camera cues, drawn caret)
-  const RENDER = params.get('render') === '1';
-  if (RENDER) document.documentElement.classList.add('ezdemo-render');
-
   const $ = id => document.getElementById(id);
-  const cursor = $('ezdemoCursor');
   const modal = $('ModalLoadItemsEdit');
-  let pos = { x: window.innerWidth * 0.62, y: window.innerHeight * 0.72 };
-  let runId = 0;
+  const october = new Date(2026, 9, 1);
 
-  class Cancelled extends Error {}
-  const sleep = (ms, id) => new Promise((res, rej) => setTimeout(() => (id !== runId ? rej(new Cancelled()) : res()), ms / SPEED));
-  const placeCursor = () => { cursor.style.transform = `translate(${pos.x}px, ${pos.y}px)`; window.__ezpos = pos; };
-
-  // Camera cue for the video renderer: the camera glides to a fixed framing (zoom + center) over `dur` ms
-  let camSeq = 0;
-  function cam(zoom, at = { x: innerWidth / 2, y: innerHeight / 2 }, dur = 1600) {
-    window.__ezcam = { zoom, x: at.x, y: at.y, dur, id: ++camSeq };
-  }
-
-  // Native carets blink on the real clock; in render mode draw one that follows the virtual clock
-  let lastKey = -1e9;
-  const caret = document.createElement('div');
-  caret.id = 'ezdemoCaret';
-  document.body.appendChild(caret);
-  const measure = document.createElement('canvas').getContext('2d');
-  function drawCaret(now) {
-    const el = document.activeElement;
-    const ok = RENDER && el && el.tagName === 'INPUT' && el.type === 'text' && !el.classList.contains('ezdemo-date') && el.closest('.modal.show, #pageHeader');
-    if (!ok) { caret.style.display = 'none'; return; }
-    const cs = getComputedStyle(el), r = el.getBoundingClientRect();
-    measure.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-    const text = cs.textTransform === 'uppercase' ? el.value.toUpperCase() : el.value;
-    const fs = parseFloat(cs.fontSize);
-    const x = r.left + parseFloat(cs.borderLeftWidth) + parseFloat(cs.paddingLeft) + measure.measureText(text).width;
-    const on = now - lastKey < 500 || Math.floor((now - lastKey - 500) / 530) % 2 === 1;
-    caret.style.cssText = `display:${on ? 'block' : 'none'}; left:${Math.round(x)}px; top:${r.top + (r.height - fs * 1.2) / 2}px; height:${fs * 1.2}px;`;
-  }
-  if (RENDER) (function tick(t) { drawCaret(t); requestAnimationFrame(tick); })(0);
-  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-  function centerOf(el, dx = 0, dy = 0) {
-    const r = el.getBoundingClientRect();
-    return { x: r.left + r.width / 2 + dx, y: r.top + r.height / 2 + dy };
-  }
-
-  function moveTo(target, id, { mode = 'arrow', dur } = {}) {
-    const to = target instanceof Element ? centerOf(target) : target;
-    const from = { ...pos };
-    const dist = Math.hypot(to.x - from.x, to.y - from.y);
-    const ms = (dur ?? Math.min(1050, Math.max(380, 260 + dist * 0.75))) / SPEED;
-    const bend = (Math.random() - .5) * Math.min(80, dist * .18);
-    const start = performance.now();
-    return new Promise((res, rej) => {
-      const step = now => {
-        if (id !== runId) return rej(new Cancelled());
-        const t = Math.min(1, (now - start) / ms), k = ease(t);
-        const arc = Math.sin(Math.PI * k) * bend;
-        pos = { x: from.x + (to.x - from.x) * k - arc * (to.y - from.y) / (dist || 1), y: from.y + (to.y - from.y) * k + arc * (to.x - from.x) / (dist || 1) };
-        if (t > .55) cursor.dataset.mode = mode;
-        placeCursor();
-        t < 1 ? requestAnimationFrame(step) : res();
-      };
-      requestAnimationFrame(step);
-    });
-  }
-
-  async function click(id) {
-    cursor.classList.add('press');
-    if (SHOW_CLICKS) {
-      const ring = document.createElement('div');
-      ring.className = 'ezdemo-ring';
-      ring.style.left = pos.x + 'px'; ring.style.top = pos.y + 'px';
-      document.body.appendChild(ring);
-      setTimeout(() => ring.remove(), 600);
-    }
-    await sleep(110, id);
-    cursor.classList.remove('press');
-    await sleep(90, id);
-  }
-
-  function focusField(el) {
-    document.querySelectorAll('.is-focus').forEach(e => e.classList.remove('is-focus'));
-    if (!el) return;
-    el.classList.add('is-focus');
-    el.focus({ preventScroll: true });
-  }
-
-  async function type(el, text, id, cps = 15) {
-    for (const ch of text) {
-      el.value += ch;
-      lastKey = performance.now();
-      await sleep(1000 / cps * (0.6 + Math.random() * 0.8), id);
-    }
-  }
-
-  // Browsers draw <select> and date pop-ups natively, outside the page, so these are lookalikes:
-  // macOS menus for Mac viewers, Chrome's own list on Windows, and Chrome's calendar on both.
-  const PLATFORM = params.get('platform') || (/Mac/.test(navigator.platform || navigator.userAgent) ? 'mac' : 'win');
-
-  // Highlight whichever pop-up item is under the demo cursor, like a real mouse hover
-  function trackHover(container, selector) {
-    (function tick() {
-      if (!container.isConnected) return;
-      const hit = document.elementFromPoint(pos.x, pos.y);
-      const item = hit && container.contains(hit) ? hit.closest(selector) : null;
-      container.querySelectorAll(`${selector}.is-hover`).forEach(e => e !== item && e.classList.remove('is-hover'));
-      if (item) item.classList.add('is-hover');
-      requestAnimationFrame(tick);
-    })();
-  }
-
-  function scrollElement(el, to, ms, id) {
-    const from = el.scrollTop, start = performance.now();
-    return new Promise((res, rej) => {
-      const step = now => {
-        if (id !== runId) return rej(new Cancelled());
-        const t = Math.min(1, (now - start) / (ms / SPEED));
-        el.scrollTop = from + (to - from) * ease(t);
-        t < 1 ? requestAnimationFrame(step) : res();
-      };
-      requestAnimationFrame(step);
-    });
-  }
-
-  function openSelectPopup(sel) {
-    const r = sel.getBoundingClientRect();
-    const cur = sel.selectedIndex;
-    const pop = document.createElement('div');
-    pop.className = `ezsel ezsel-${PLATFORM}`;
-    pop.innerHTML = [...sel.options].map((o, i) =>
-      `<div class="ezsel-item${i === cur ? ' is-checked' : ''}" data-i="${i}">${o.text}</div>`).join('');
-    document.body.appendChild(pop);
-    const itemH = pop.querySelector('.ezsel-item').offsetHeight;
-    if (PLATFORM === 'mac') {
-      // macOS opens the menu so the current choice sits right over the control
-      pop.style.minWidth = `${r.width + 10}px`;
-      pop.style.left = `${r.left - 5}px`;
-      const pad = 5, full = pop.scrollHeight, maxH = innerHeight - 16;
-      const height = Math.min(full, maxH);
-      let top = r.top + (r.height - itemH) / 2 - pad - cur * itemH;
-      top = Math.min(Math.max(top, 8), innerHeight - 8 - height);
-      pop.style.top = `${top}px`;
-      pop.style.height = `${height}px`;
-    } else {
-      // Chrome on Windows drops a list the width of the control, up to 20 rows, flipping up if needed
-      pop.style.left = `${r.left}px`;
-      pop.style.width = `${r.width}px`;
-      pop.style.font = getComputedStyle(sel).font;
-      const height = Math.min(pop.scrollHeight, itemH * 20 + 2);
-      const below = innerHeight - r.bottom - 8;
-      pop.style.height = `${height}px`;
-      pop.style.top = `${height <= below ? r.bottom : Math.max(8, r.top - height)}px`;
-      pop.querySelector(`[data-i="${cur}"]`).classList.add('is-hover');
-    }
-    trackHover(pop, '.ezsel-item');
-    return pop;
-  }
-
-  async function chooseSelect(sel, value, id) {
-    await moveTo(sel, id, { mode: 'arrow' });
-    await click(id);
-    focusField(sel);
-    const pop = openSelectPopup(sel);
-    await sleep(420, id);
-    const idx = [...sel.options].findIndex(o => o.value === value);
-    const target = pop.querySelector(`[data-i="${idx}"]`);
-    const t = target.offsetTop, h = target.offsetHeight;
-    if (t + h > pop.scrollTop + pop.clientHeight - 8) {
-      await scrollElement(pop, Math.min(t - pop.clientHeight / 2, pop.scrollHeight - pop.clientHeight), 650, id);
-      await sleep(150, id);
-    }
-    await moveTo(centerOf(target, -target.offsetWidth / 2 + 70), id, { mode: 'arrow', dur: 520 });
-    await sleep(280, id);
-    await click(id);
-    pop.remove();
-    sel.value = value;
-    await sleep(300, id);
-  }
-
-  // Chrome's calendar pop-up for <input type="date">
-  const TODAY = new Date(2026, 9, 28);
-  function openDatePicker(input, month) {
-    const r = input.getBoundingClientRect();
-    const first = new Date(month.getFullYear(), month.getMonth(), 1);
-    const start = new Date(first); start.setDate(1 - first.getDay());
-    const label = first.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    const cells = Array.from({ length: 42 }, (_, i) => {
-      const d = new Date(start); d.setDate(start.getDate() + i);
-      const cls = ['ezcal-day'];
-      if (d.getMonth() !== first.getMonth()) cls.push('is-other');
-      if (d.toDateString() === TODAY.toDateString()) cls.push('is-today');
-      return `<div class="${cls.join(' ')}" data-date="${d.getMonth() + 1}/${d.getDate()}">${d.getDate()}</div>`;
-    }).join('');
-    const pop = document.createElement('div');
-    pop.className = 'ezcal';
-    pop.innerHTML = `
-      <div class="ezcal-head">
-        <div class="ezcal-month">${label}<svg viewBox="0 0 10 6"><path d="M0 0h10L5 6z" fill="currentColor"/></svg></div>
-        <div class="ezcal-nav">
-          <svg viewBox="0 0 12 12"><path d="M2.5 8 6 4.5 9.5 8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-          <svg viewBox="0 0 12 12"><path d="M2.5 4 6 7.5 9.5 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-        </div>
-      </div>
-      <div class="ezcal-week">${['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => `<div>${d}</div>`).join('')}</div>
-      <div class="ezcal-grid">${cells}</div>
-      <div class="ezcal-foot"><span>Clear</span><span>Today</span></div>`;
-    pop.style.left = `${r.left}px`;
-    pop.style.top = `${r.bottom + 1}px`;
-    document.body.appendChild(pop);
-    trackHover(pop, '.ezcal-day');
-    return pop;
-  }
-
-  async function pickDate(input, month, day, id) {
-    const icon = input.parentElement.querySelector('.ezdemo-cal');
-    await moveTo(icon, id, { mode: 'arrow' });
-    await click(id);
-    focusField(input);
-    const pop = openDatePicker(input, month);
-    await sleep(500, id);
-    const cell = pop.querySelector(`.ezcal-day:not(.is-other)[data-date="${month.getMonth() + 1}/${day}"]`);
-    await moveTo(cell, id, { mode: 'arrow', dur: 600 });
-    await sleep(300, id);
-    await click(id);
-    cell.classList.add('is-selected');
-    await sleep(120, id);
-    pop.remove();
-    input.value = `${String(month.getMonth() + 1).padStart(2, '0')}/${String(day).padStart(2, '0')}/${month.getFullYear()}`;
-    await sleep(300, id);
-  }
-
-  // jQuery UI autocomplete menu, markup identical to the app's
-  function openAutocomplete(input, items) {
-    const r = input.getBoundingClientRect();
-    const ul = document.createElement('ul');
-    ul.className = 'ui-menu ui-widget ui-widget-content ui-autocomplete ui-front';
-    ul.style.cssText = `top:${r.bottom}px; left:${r.left}px; position:fixed;`;
-    ul.innerHTML = items.map(t => `<li class="ui-menu-item"><div class="ui-menu-item-wrapper">${t}</div></li>`).join('');
-    document.body.appendChild(ul);
-    ul.style.width = Math.max(ul.offsetWidth + 1, r.width) + 'px';
-    return ul;
-  }
-
-  // jquery-timepicker list (H:i, hourly) plus the Bootstrap "Early Time"/"Late Time" tooltip
-  function openTimepicker(input, label, scrollToHour = 7) {
-    const r = input.getBoundingClientRect();
-    const wrap = document.createElement('div');
-    wrap.className = 'ui-timepicker-wrapper';
-    wrap.style.cssText = `position:fixed; top:${r.bottom}px; left:${r.left}px;`;
-    wrap.innerHTML = '<ul class="ui-timepicker-list">' +
-      Array.from({ length: 24 }, (_, h) => `<li class="${h < 12 ? 'ui-timepicker-am' : 'ui-timepicker-pm'}" data-h="${h}">${String(h).padStart(2, '0')}:00</li>`).join('') + '</ul>';
-    document.body.appendChild(wrap);
-    wrap.scrollTop = wrap.querySelector('li').offsetHeight * scrollToHour;
-
-    const tip = document.createElement('div');
-    tip.className = 'tooltip fade bs-tooltip-top show';
-    tip.setAttribute('role', 'tooltip');
-    tip.innerHTML = `<div class="arrow"></div><div class="tooltip-inner">${label}</div>`;
-    document.body.appendChild(tip);
-    tip.style.cssText = `position:fixed; top:${r.top - tip.offsetHeight}px; left:${r.left + r.width / 2 - tip.offsetWidth / 2}px;`;
-    tip.querySelector('.arrow').style.left = (tip.offsetWidth / 2 - 6) + 'px';
-    return { wrap, tip };
-  }
-
-  async function pickZip(zipEl, prefix, items, pickIndex, fill, id) {
-    await moveTo(zipEl, id, { mode: 'text' });
-    await click(id);
-    focusField(zipEl);
-    await sleep(250, id);
-    await type(zipEl, prefix, id, 11);
-    await sleep(420, id);
-    const ul = openAutocomplete(zipEl, items);
-    await sleep(650, id);
-    const option = ul.querySelectorAll('.ui-menu-item-wrapper')[pickIndex];
-    await moveTo(option, id, { mode: 'arrow', dur: 520 });
-    option.classList.add('ui-state-active');
-    await sleep(320, id);
-    await click(id);
-    ul.remove();
+  // One zip pick fills City, State and Zip, as in the real app
+  async function pickZip(k, zipEl, prefix, items, pickIndex, fill) {
+    await k.autocomplete(zipEl, prefix, items, pickIndex);
     zipEl.value = fill.zip;
     $(fill.cityId).value = fill.city;
     $(fill.stateId).value = fill.state;
-    await sleep(500, id);
+    await k.sleep(500);
   }
 
-  async function pickTime(input, label, hour, id) {
-    await moveTo(input, id, { mode: 'text' });
-    await click(id);
-    focusField(input);
-    const { wrap, tip } = openTimepicker(input, label);
-    await sleep(600, id);
-    const li = wrap.querySelector(`li[data-h="${hour}"]`);
-    await moveTo(li, id, { mode: 'arrow', dur: 480 });
-    li.classList.add('ui-timepicker-selected');
-    await sleep(300, id);
-    await click(id);
-    wrap.remove(); tip.remove();
-    input.value = li.textContent;
-    await sleep(300, id);
-  }
+  EZDemo.start({
+    reset() {
+      modal.querySelectorAll('input[type=text]').forEach(i => (i.value = ''));
+      modal.querySelectorAll('select').forEach(s => (s.selectedIndex = 0));
+      $('newRow').classList.add('d-none');
+    },
 
-  async function fillText(el, text, id, cps) {
-    await moveTo(el, id, { mode: 'text' });
-    await click(id);
-    focusField(el);
-    await sleep(180, id);
-    await type(el, text, id, cps);
-    await sleep(220, id);
-  }
+    async run(k) {
+      await k.sleep(1400);
 
-  function scrollModal(to, ms, id) {
-    const from = modal.scrollTop, start = performance.now();
-    return new Promise((res, rej) => {
-      const step = now => {
-        if (id !== runId) return rej(new Cancelled());
-        const t = Math.min(1, (now - start) / (ms / SPEED));
-        modal.scrollTop = from + (to - from) * ease(t);
-        t < 1 ? requestAnimationFrame(step) : res();
-      };
-      requestAnimationFrame(step);
-    });
-  }
+      // Open "New Load Posting"
+      const addPost = $('btnAddPost');
+      k.cam(1.25, k.centerOf(addPost, -260, 90));
+      await k.press(addPost);
+      await k.sleep(350);
+      k.showModal(modal);
+      // One steady framing on the form for the whole fill-in
+      k.cam(1.2, { x: innerWidth / 2, y: 405 });
+      await k.sleep(1100);
 
-  function showModal() {
-    document.body.classList.add('modal-open');
-    const bd = document.createElement('div');
-    bd.className = 'modal-backdrop fade';
-    bd.id = 'ezdemoBackdrop';
-    document.body.appendChild(bd);
-    modal.style.display = 'block';
-    modal.scrollTop = 0;
-    void modal.offsetWidth;
-    bd.classList.add('show');
-    modal.classList.add('show');
-  }
+      // Origin and destination: country, then one zip lookup each
+      await k.chooseSelect($('oCountry'), 'US');
+      await pickZip(k, $('oZip'), '3740',
+        ['37401', '37402', '37403', '37404', '37405', '37406', '37407', '37408', '37409'].map(z => `${z} [CHATTANOOGA, TN]`), 1,
+        { zip: '37402', city: 'CHATTANOOGA', state: 'TN', cityId: 'oCity', stateId: 'oState' });
+      await k.chooseSelect($('dCountry'), 'US');
+      await pickZip(k, $('dZip'), '3140',
+        ['31401', '31402', '31403', '31404', '31405', '31406', '31407', '31408', '31409'].map(z => `${z} [SAVANNAH, GA]`), 0,
+        { zip: '31401', city: 'SAVANNAH', state: 'GA', cityId: 'dCity', stateId: 'dState' });
 
-  function hideModal() {
-    modal.classList.remove('show');
-    modal.style.display = 'none';
-    document.body.classList.remove('modal-open');
-    $('ezdemoBackdrop')?.remove();
-  }
+      // Dates & pickup window
+      await k.pickDate($('oDate'), october, 29);
+      await k.pickTime($('oFrom'), 'Early Time', 8);
+      await k.pickDate($('dDate'), october, 30);
+      k.focusField(null);
 
-  function reset() {
-    hideModal();
-    document.querySelectorAll('.ui-autocomplete, .ui-timepicker-wrapper, .tooltip, .ezdemo-ring, .ezsel, .ezcal').forEach(e => e.remove());
-    document.querySelectorAll('.is-hover, .is-focus').forEach(e => e.classList.remove('is-hover', 'is-focus'));
-    modal.querySelectorAll('input[type=text]').forEach(i => (i.value = ''));
-    modal.querySelectorAll('select').forEach(s => (s.selectedIndex = 0));
-    $('newRow').classList.add('d-none');
-    $('PleaseWait').className = 'PleaseWaitOff';
-    $('PleaseWaitMsg').className = 'PleaseWaitMsgOff';
-    document.activeElement?.blur();
-    pos = { x: window.innerWidth * 0.62, y: window.innerHeight * 0.72 };
-    cursor.dataset.mode = 'arrow';
-    placeCursor();
-  }
+      // Scroll a little to bring equipment and rate into view
+      await k.sleep(200);
+      await k.scrollElement(modal, Math.min(220, modal.scrollHeight - modal.clientHeight), 700);
+      await k.sleep(250);
+      await k.chooseSelect($('equip'), '25');
+      await k.fillText($('rate'), '1925', 12);
+      await k.chooseSelect($('cap'), '1');
+      await k.fillText($('miles'), '310', 12);
+      k.focusField(null);
 
-  async function run(id) {
-    reset();
-    window.__ezdone = false;
-    const full = { x: innerWidth / 2, y: innerHeight / 2 };
-    cam(1, full, 0);
-    await sleep(1400, id);
+      // Scroll to the item details
+      await k.sleep(300);
+      await k.scrollElement(modal, modal.scrollHeight - modal.clientHeight, 1000);
+      await k.sleep(300);
+      await k.fillText($('lenFt'), '53', 10);
+      await k.fillText($('weight'), '42000', 13);
+      await k.fillText($('product'), 'Paper Goods', 16);
+      await k.fillText($('lbLenFt'), '53', 10);
+      k.focusField(null);
 
-    // Open "New Load Posting"
-    const addPost = $('btnAddPost');
-    cam(1.25, centerOf(addPost, -260, 90));
-    await moveTo(addPost, id, { mode: 'pointer' });
-    addPost.classList.add('is-hover');
-    await sleep(250, id);
-    await click(id);
-    addPost.classList.remove('is-hover');
-    await sleep(350, id);
-    showModal();
-    // One steady framing on the form for the whole fill-in
-    cam(1.2, { x: innerWidth / 2, y: 405 });
-    await sleep(1100, id);
+      // Save: "Please Wait", then the new posting appears
+      await k.press($('btnSave'), { hold: 300 });
+      k.cam(1, k.full());
+      k.pleaseWait(true);
+      await k.sleep(1150);
+      k.hideModal(modal);
+      $('newRow').classList.remove('d-none');
+      k.pleaseWait(false);
+      k.setCursor('arrow');
 
-    // Origin: country, then one zip lookup fills City + State + Zip
-    await chooseSelect($('oCountry'), 'US', id);
-    await pickZip($('oZip'), '3740',
-      ['37401', '37402', '37403', '37404', '37405', '37406', '37407', '37408', '37409'].map(z => `${z} [CHATTANOOGA, TN]`), 1,
-      { zip: '37402', city: 'CHATTANOOGA', state: 'TN', cityId: 'oCity', stateId: 'oState' }, id);
-
-    // Destination
-    await chooseSelect($('dCountry'), 'US', id);
-    await pickZip($('dZip'), '3140',
-      ['31401', '31402', '31403', '31404', '31405', '31406', '31407', '31408', '31409'].map(z => `${z} [SAVANNAH, GA]`), 0,
-      { zip: '31401', city: 'SAVANNAH', state: 'GA', cityId: 'dCity', stateId: 'dState' }, id);
-
-    // Dates & pickup window
-    const october = new Date(2026, 9, 1);
-    await pickDate($('oDate'), october, 29, id);
-    await pickTime($('oFrom'), 'Early Time', 8, id);
-    await pickDate($('dDate'), october, 30, id);
-    focusField(null);
-    document.activeElement?.blur();
-
-    // Scroll a little to bring equipment and rate into view
-    await sleep(200, id);
-    await scrollModal(Math.min(220, modal.scrollHeight - modal.clientHeight), 700, id);
-    await sleep(250, id);
-
-    // Equipment, rate, capacity, miles
-    await chooseSelect($('equip'), '25', id);
-    await fillText($('rate'), '1925', id, 12);
-    await chooseSelect($('cap'), '1', id);
-    await fillText($('miles'), '310', id, 12);
-    focusField(null);
-    document.activeElement?.blur();
-
-    // Scroll to the item details
-    await sleep(300, id);
-    await scrollModal(modal.scrollHeight - modal.clientHeight, 1000, id);
-    await sleep(300, id);
-    await fillText($('lenFt'), '53', id, 10);
-    await fillText($('weight'), '42000', id, 13);
-    await fillText($('product'), 'Paper Goods', id, 16);
-    await fillText($('lbLenFt'), '53', id, 10);
-    focusField(null);
-    document.activeElement?.blur();
-
-    // Save
-    const save = $('btnSave');
-    await moveTo(save, id, { mode: 'pointer' });
-    save.classList.add('is-hover');
-    await sleep(300, id);
-    await click(id);
-    save.classList.remove('is-hover');
-    cam(1, full);
-    $('PleaseWait').className = 'PleaseWaitOn';
-    $('PleaseWaitMsg').className = 'PleaseWaitMsgOn';
-    await sleep(1150, id);
-    hideModal();
-    $('newRow').classList.remove('d-none');
-    $('PleaseWait').className = 'PleaseWaitOff';
-    $('PleaseWaitMsg').className = 'PleaseWaitMsgOff';
-    cursor.dataset.mode = 'arrow';
-
-    // Settle on the new posting
-    await sleep(700, id);
-    cam(1.3, centerOf($('newRow'), -150, 40));
-    await moveTo(centerOf($('newRow'), 120, 46), id, { mode: 'arrow', dur: 1100 });
-    await sleep(2600, id);
-    cam(1, full);
-    await sleep(2000, id);
-    window.__ezdone = true;
-  }
-
-  async function loop() {
-    const id = ++runId;
-    try {
-      emit('playing');
-      do { await run(id); if (LOOP) await sleep(800, id); } while (LOOP);
-      emit('ended');
-    } catch (e) { if (!(e instanceof Cancelled)) throw e; }
-  }
-
-  function stop() { runId++; reset(); emit('ready'); }
-
-  // Tell an embedding player page what the demo is doing (ready / playing / ended)
-  function emit(state) {
-    if (window.parent !== window) window.parent.postMessage({ source: 'ezdemo', state }, '*');
-  }
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'r' || e.key === 'R') loop();
-    if (e.key === 's' || e.key === 'S') stop();
+      // Settle on the new posting
+      await k.sleep(700);
+      k.cam(1.3, k.centerOf($('newRow'), -150, 40));
+      await k.moveTo(k.centerOf($('newRow'), 120, 46), { mode: 'arrow', dur: 1100 });
+      await k.sleep(2600);
+      k.cam(1, k.full());
+      await k.sleep(2000);
+    },
   });
-  window.ezdemo = { restart: loop, stop, showModal, hideModal };
-  placeCursor();
-  const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
-  if (params.get('autoplay') !== '0') fontsReady.then(loop);
-  else fontsReady.then(() => emit('ready'));
 })();
 </script>
 </body>

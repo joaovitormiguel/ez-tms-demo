@@ -1,0 +1,80 @@
+/* EZ TMS demo kit: the demo-only layer. Nothing here is part of the EZ TMS UI. */
+  html, body { overflow: hidden; }
+
+  /* Chrome renders <input type="date"> in the viewer's locale; fake it so videos always show US mm/dd/yyyy */
+  .ezdemo-date::placeholder { color: #495057; opacity: 1; }
+  .ezdemo-cal { position: absolute; right: 27px; top: 11px; width: 15px; height: 16px; pointer-events: none; }
+
+  /* The app draws the header search/clear icons in Font Awesome Pro "regular" (weight 400); the free set has no regular magnifier */
+  html:not(.ezdemo-fa-pro) .navbar-search-btn i { font-weight: 900 !important; }
+
+  /* Hover/focus states the fake cursor can't trigger natively (values copied from Bootstrap 4.4.1) */
+  .btn-primary.is-hover { background-color: #0069d9; border-color: #0062cc; }
+  .form-control.is-focus { color: #495057; background-color: #fff; border-color: #80bdff; outline: 0; box-shadow: 0 0 0 .2rem rgba(0,123,255,.25); }
+
+  #ezdemoCursor { position: fixed; left: 0; top: 0; z-index: 100000; pointer-events: none; will-change: transform; }
+  #ezdemoCursor > * { position: absolute; left: 0; top: 0; display: none; }
+  #ezdemoCursor[data-mode="arrow"] .c-arrow,
+  #ezdemoCursor[data-mode="text"] .c-text,
+  #ezdemoCursor[data-mode="pointer"] .c-pointer { display: block; }
+  #ezdemoCursor .c-arrow { transform: translate(-5px, -3px); }
+  #ezdemoCursor .c-text { transform: translate(-12px, -12px); }
+  #ezdemoCursor .c-pointer { transform: translate(-7px, -1px); font-size: 21px; line-height: 1; }
+  #ezdemoCursor .c-pointer i { position: absolute; left: 0; top: 0; }
+  #ezdemoCursor.press { transition: none; }
+  #ezdemoCursor.press > * { scale: .88; }
+  /* Native <select> pop-up lookalikes */
+  .ezsel { position: fixed; z-index: 1200; overflow-y: auto; scrollbar-width: none; }
+  .ezsel::-webkit-scrollbar { display: none; }
+  .ezsel-item { white-space: nowrap; cursor: default; }
+  /* macOS menu (Chrome on Mac uses the system menu) */
+  .ezsel-mac { padding: 5px 0; border-radius: 7px; background: rgba(242, 242, 242, .82);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8);
+    box-shadow: 0 0 0 .5px rgba(0, 0, 0, .22), 0 10px 30px rgba(0, 0, 0, .25);
+    font: 13px/22px -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; color: #1d1d1f; }
+  .ezsel-mac .ezsel-item { position: relative; height: 22px; padding: 0 20px 0 26px; margin: 0 5px; border-radius: 4px; }
+  .ezsel-mac .ezsel-item.is-checked::before { content: "✓"; position: absolute; left: 9px; font-size: 12px; font-weight: 600; }
+  .ezsel-mac .ezsel-item.is-hover { background: #0a82ff; color: #fff; }
+  /* Chrome on Windows draws its own list */
+  .ezsel-win { background: #fff; border: 1px solid #767676; color: #000; box-shadow: 0 2px 6px rgba(0, 0, 0, .18); }
+  .ezsel-win .ezsel-item { padding: 1px 4px; line-height: 1.25; }
+  .ezsel-win .ezsel-item.is-hover { background: #0078d7; color: #fff; }
+
+  /* Chrome's date picker pop-up */
+  .ezcal { position: fixed; z-index: 1200; width: 246px; padding: 10px 10px 8px; background: #fff; color: #000;
+    border: 1px solid #767676; border-radius: 3px; box-shadow: 0 3px 10px rgba(0, 0, 0, .2);
+    font: 13px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; user-select: none; }
+  .ezcal-head { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 10px 4px; }
+  .ezcal-month { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; }
+  .ezcal-month svg { width: 8px; height: 5px; }
+  .ezcal-nav { display: flex; gap: 10px; color: #333; }
+  .ezcal-nav svg { width: 14px; height: 14px; }
+  .ezcal-week, .ezcal-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
+  .ezcal-week div { font-size: 12px; color: #000; padding-bottom: 6px; }
+  .ezcal-day { height: 28px; line-height: 28px; margin: 1px; border-radius: 2px; cursor: default; }
+  .ezcal-day.is-other { color: #8e8e8e; }
+  .ezcal-day.is-today { box-shadow: inset 0 0 0 1px #767676; }
+  .ezcal-day.is-hover { background: #e5e5e5; }
+  .ezcal-day.is-selected { background: #0075ff; color: #fff; box-shadow: none; }
+  .ezcal-foot { display: flex; justify-content: space-between; margin: 8px 4px 0; color: #0075ff; font-size: 13px; }
+
+  .ezdemo-render input, .ezdemo-render textarea { caret-color: transparent !important; }
+  #ezdemoCaret { position: fixed; display: none; width: 1px; background: #495057; z-index: 99998; pointer-events: none; }
+  .ezdemo-ring { position: fixed; z-index: 99999; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%;
+    border: 2px solid rgba(0,123,255,.6); pointer-events: none; animation: ezdemoRing .45s ease-out forwards; }
+  @keyframes ezdemoRing { from { transform: scale(.3); opacity: 1; } to { transform: scale(1.35); opacity: 0; } }
+
+  /* The app's checkboxes draw their glyphs with "Font Awesome 5 Pro"; published copies only have the free font */
+  html:not(.ezdemo-fa-pro) span.ezl-checkbox input[type=checkbox] + label:before { font-family: 'Font Awesome 5 Free'; }
+  html:not(.ezdemo-fa-pro) span.ezl-checkbox input[type=checkbox]:checked + label:before { font-weight: 900; }
+
+  /* Header "+ Add New" menu item hover the fake cursor can't trigger (Bootstrap 4.4.1 .dropdown-item:hover) */
+  .dropdown-item.is-hover { color: #16181b; background-color: #f8f9fa; }
+  .btn-success.is-hover { background-color: #218838; border-color: #1e7e34; }
+
+  /* The app's dotted links (dates, statuses) carry hrefs; without one, Bootstrap's a:not([href]) rule would strip the underline */
+  a.text-dotted:not([href]) { text-decoration-line: underline; text-decoration-style: dotted; }
+
+  /* Button-styled links in the app carry hrefs, so Bootstrap's a:not([href]) { color: inherit } never applies there */
+  a.btn-primary:not([href]), a.btn-success:not([href]) { color: #fff; }
+  a.btn-outline-primary:not([href]) { color: #007bff; }

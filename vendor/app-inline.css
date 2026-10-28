@@ -1,0 +1,6 @@
+  /* Copied from the app page's inline <style> block */
+  #pageHeader:not(.sticky-top) { z-index: 1030; }
+  .no-focus-border:focus { outline: none; border-color: transparent; box-shadow: none; }
+  .input_group_border { border: 1px solid var(--secondary); border-radius: 0.25rem; }
+  /* From the app's Syncfusion stylesheet (ej.web.all.min.css), the only rule this screen uses */
+  .e-ejinputtext { font-family: "Segoe UI", "Helvetica Neue", Ubuntu, Arial; padding-right: 4px; }

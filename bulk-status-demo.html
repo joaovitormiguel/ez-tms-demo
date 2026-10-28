@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>EZ TMS Bulk Status Demo</title>
+<link rel="icon" type="image/png" href="vendor/img/favicon-32x32.png">
+<!-- Same stylesheets, versions and order as demo.ezloader.app (captured 28 Oct 2026) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="vendor/jquery-ui.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+<!-- The app uses Font Awesome Pro (licensed to EZ TMS). Published copies load the free set, with the
+     closest free icon wherever the app uses a Pro-only one. Local copies with the gitignored
+     vendor/fontawesome-pro folder switch back to the exact Pro icons (used for video renders). -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+<script src="kit/fa-switch.js"></script>
+<link rel="stylesheet" href="vendor/fontawesome-pro/css/all.css" onload="window.__ezUsePro && window.__ezUsePro()">
+<link rel="stylesheet" href="vendor/perfect-scrollbar.css">
+<link rel="stylesheet" href="vendor/jquery-stickytable.css">
+<link rel="stylesheet" href="vendor/Site.css">
+<link rel="stylesheet" href="vendor/Bootstrap-Overrides.css">
+<link rel="stylesheet" href="vendor/Colors.css">
+<link rel="stylesheet" href="vendor/Colors.light.css">
+<link rel="stylesheet" href="vendor/jquery.timepicker.min.css">
+<link rel="stylesheet" href="vendor/app-inline.css">
+<link rel="stylesheet" href="kit/demo-kit.css">
+</head>
+<body>
+
+<form id="PageForm" onsubmit="return false">
+  <div class="wrapper">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <nav id="sidebar" class="collapse show mCustomScrollbar mCS-autoHide mCS_no_scrollbar" style="overflow: visible;">
+      <div class="mCustomScrollBox mCS-minimal mCSB_vertical mCSB_outside" style="max-height: none;">
+        <div class="mCSB_container mCS_y_hidden mCS_no_scrollbar_y" style="position:relative; top:0; left:0;" dir="ltr">
+          <div class="sidebar-header">
+            <div class="sidebar-logo">
+              <img src="vendor/img/favicon-32x32.png" class="sidebar-item" alt="">
+            </div>
+          </div>
+          <div class="sidebar-menu-divider mt-0"></div>
+          <ul class="list-unstyled components" style="margin-left: 0px; margin-right:0px; padding-left:1px; padding-right:1px;">
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-tachometer-alt fa-fw"></i><span class="sidebar-item-text">Dashboards</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-truck-loading fa-fw"></i><span class="sidebar-item-text">Loads</span></a></li>
+            <li class="sidebar-item"><a class="ezl-menu-item"><i class="sidebar-item-icon fas fa-user-alt fa-fw"></i><span class="sidebar-item-text">Customers</span></a></li>
+            <li class="sidebar-item"><a class="ezl-menu-item"><i class="sidebar-item-icon fas fa-truck fa-fw"></i><span class="sidebar-item-text">Carriers</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-donate fa-fw" data-fa-free="fa-donate" data-fa-pro="fa-badge-dollar"></i><span class="sidebar-item-text">Sales</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-pallet fa-fw" data-fa-free="fa-pallet" data-fa-pro="fa-pallet-alt"></i><span class="sidebar-item-text">LTL</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-calculator fa-fw" data-fa-free="fa-calculator" data-fa-pro="fa-abacus"></i><span class="sidebar-item-text">Accounting</span></a></li>
+            <li class="sidebar-item"><a class="ezl-menu-item"><i class="sidebar-item-icon fas fa-file-alt fa-fw"></i><span class="sidebar-item-text">Reports</span></a></li>
+            <li class="sidebar-item" style="color: orange; font-size: 0.8rem;">
+              <div class="sidebar-menu-divider"></div>
+              <a class="sidebar-menu-help btn text-left"><i class="sidebar-item-icon far fa-question-circle"></i><span class="sidebar-item-text">Need Help? Click Here</span></a>
+            </li>
+            <li class="sidebar-item">
+              <div class="sidebar-menu-divider"></div>
+              <button type="button" class="sidebar-menu-collapse btn text-left">
+                <i class="sidebar-item-icon fas fa-arrow-right d-none"></i>
+                <i class="sidebar-item-icon fas fa-arrow-left"></i>
+                <span class="sidebar-item-text">Collapse Menu</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div id="content">
+      <!-- ===================== HEADER ===================== -->
+      <header id="pageHeader" class="navbar-nav-title navbar navbar-expand flex-column flex-md-row bd-navbar mb-0 shadow">
+        <div class="container-fluid navbar-nav-title">
+          <div class="navbar-nav">
+            <ul class="navbar-nav bd-navbar-nav flex-row">
+              <li><button type="button" id="sidebarCollapse" class="btn btn-primary"><i class="fas fa-align-left"></i></button></li>
+            </ul>
+            <ul id="headerLogo" class="navbar-nav bd-navbar-nav flex-row">
+              <li><div class="nav-item h3 mb-0 ml-2 mr-2"><img class="navbar-header-icon" src="vendor/img/ez-tms-logo.png" alt="EZ TMS" style="border-width:0px;"></div></li>
+            </ul>
+          </div>
+
+          <ul id="pageOptions" class="navbar-nav flex-row ml-md-auto xd-none d-md-flex">
+            <li class="ml-2 mr-2">
+              <div class="input-group ezl-loadsearch flex-nowrap input_group_border">
+                <div class="input-group-prepend">
+                  <button class="btn ezl-loadsearch-icon btn-outline-secondary navbar-search-btn border-0" type="button" disabled>
+                    <i class="fas fa-search" style="font-weight: 400; padding-top:4px"></i>
+                  </button>
+                </div>
+                <input type="text" class="form-control ezl-loadsearch-text e-ejinputtext e-customlocationfilter pl-0 navbar-search-text border-0 no-focus-border ui-autocomplete-input" placeholder="Load # Search..." tabindex="-1">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary navbar-search-btn border-0" type="button" disabled style="background-color: inherit !important; color: var(--secondary) !important; cursor: default;">
+                    <i class="fas fa-times" style="font-weight: 400; display: none;"></i>
+                  </button>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item dropdown text-primary ml-2 mr-2">
+              <button class="btn btn-success text-nowrap mr-2" type="button" id="btnAddNewItemDdl" style="margin-top: 1px; padding-bottom: 4px;">+ Add New</button>
+              <div class="dropdown-menu dropdown-menu-right" id="addNewMenu">
+                <a id="hlNewLoad" class="dropdown-item"><i class="mr-3 fas fa-truck-loading fa-fw"></i>New Load</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-address-book fa-fw"></i>New Prospect</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-user fa-fw"></i>New Customer</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-truck fa-fw"></i>New Carrier</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-tasks fa-fw"></i>New Task</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-edit fa-fw"></i>New Note</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-phone fa-fw"></i>New Phone Note</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-quote-right fa-fw"></i>New Quote</a>
+              </div>
+            </li>
+            <div id="upNotifications">
+              <div class="ml-2 mr-2">
+                <li class="nav-item" style="cursor: pointer;"><span><i class="fas fa-bell pt-1 fa-1x"></i></span></li>
+              </div>
+            </div>
+            <div id="upAccountingNotifications">
+              <div class="mr-4 ml-2">
+                <li class="nav-item" style="cursor: pointer;">
+                  <span class="ml-3 badge badge-pill bg-ezl-highlight position-absolute">12</span>
+                  <span><i class="fas fa-comment-dollar pt-1 fa-1x" data-fa-free="fa-comment-dollar" data-fa-pro="fa-comment-alt-dollar"></i></span>
+                </li>
+              </div>
+            </div>
+            <li></li>
+            <li id="pageToasterAnchor">&nbsp;</li>
+            <li class="nav-item dropdown pl-1">
+              <div class="rounded-circle text-center portrait-wrapper portrait-wrapper-small"><div class="font-weight-bold">AT</div></div>
+            </li>
+          </ul>
+        </div>
+      </header>
+
+      <div class="ezscreen" data-screen="myloads">
+      <div class="container-fluid navandfilter-header mt-1 mb-0 sticky-top">
+        <table width="100%" class="navandfilter-table">
+          <tbody><tr>
+            <td class="navandfilter-thin">
+              <div class="form-row">
+                <div class="col-12">
+                  <div class="float-left navandfilter-div-left ml-1">
+                    <div class="thinbreadcrumb">
+                      <span class="text-muted mt-1"><span><a title="Home Page">Home</a></span><span> &gt; </span><span><a>Loads</a></span><span> &gt; </span></span>
+                      <span class="page-title-text">My Loads</span>
+                    </div>
+                  </div>
+                  <div class="float-right navandfilter-div-right mt-1"><div class="mt-1"><a class="btn btn-outline-primary align-top btn-title"><i class="fas fa-fw fa-cog"></i></a><a class="btn btn-outline-primary align-top btn-title"><i class="fas fa-fw fa-redo-alt"></i></a></div></div>
+                </div>
+              </div>
+              <div class="mt-1"><hr></div>
+            </td>
+          </tr></tbody>
+        </table>
+      </div>
+      <div class="container-fluid">
+        <div style="min-width: 830px;">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row" style="min-height:32px">
+                <div class="col-xl-5 col-sm-7 d-flex flex-nowrap">
+                  <div class="h5 text-nowrap mb-0" style="padding-top: 2px;">My Loads List</div>
+                  <div class="ml-4" style="padding-top: 1px;">
+                    <a id="lbMassUpdateStatus" class="btn btn-primary btn-title text-nowrap"><i class="fa-fw fas fa-tasks"></i><span class="ml-2">Bulk Status Change</span></a>
+                  </div>
+                  <div style="padding-top: 1px;">
+                    <a class="btn btn-primary btn-title text-nowrap"><i class="fa-fw fas fa-chalkboard"></i><span class="ml-2">Bulk Load Board Post</span></a>
+                  </div>
+                </div>
+                <div class="col-xl-4 col-sm-1 text-small text-primary pt-1"><span></span></div>
+                <div class="col-xl-3 col-sm-4 text-right d-print-none pt-1">
+                  <span><select class="LoadSearchResultsType"><option selected value="1">Default</option><option value="4">TL</option><option value="5">LTL</option><option value="6">Accounting</option></select></span>
+                  <a class="text-ezl"><i class="fa-fw fas fa-table" data-fa-free="fas" data-fa-pro="fal"></i></a>
+                  <a class="text-ezl"><i class="fa-fw fas fa-file-download text-ezl"></i></a>
+                  <a class="pointer text-ezl"><i class="fas fa-print"></i></a>
+                  <a class="text-ezl"><i class="fa-fw fas fa-redo-alt"></i></a>
+                </div>
+              </div>
+              <hr class="mt-1 mb-3">
+              <div class="wrapper wrapper_auto load_search_wrapper" style="height: 455px; overflow: hidden; position: relative;">
+                <div class="sticky-wrap overflow-y ps ps--active-x ps--active-y">
+                  <table class="table table-striped table-sm table-bordered-black mb-0 sticky-header load_search_table sticky-enabled" style="table-layout: fixed; margin: 0px; width: 100%;">
+                    <thead class="thead-dark text-nowrap">
+                      <tr>
+                        <th style="width:140px"><span class="small text-nowrap" style="display: inline-block;min-width:130px"><span><a><i class="fa-fw fas fa-check-square"></i></a></span> <a>Load #</a></span></th>
+                        <th class="small" style="width:80px"><a>Status</a></th>
+                        <th class="small" style="width:150px"><a>Customer</a></th>
+                        <th class="small" style="width:100px"><a>Date Booked</a></th>
+                        <th class="small" style="width:150px"><a>PU Name</a></th>
+                        <th class="small" style="width:200px"><a>Pickup</a></th>
+                        <th class="small" style="width:70px"><a>PU Date</a></th>
+                        <th class="small" style="width:100px"><a>PU Time</a></th>
+                        <th class="small" style="width:150px"><a>DO Name</a></th>
+                        <th class="small" style="width:200px"><a>Drop off</a></th>
+                        <th class="small" style="width:70px"><a>DO Date</a></th>
+                        <th class="small" style="width:100px"><a>DO Time</a></th>
+                        <th class="small" style="width:70px"><a>Tracking</a></th>
+                        <th class="small" style="width:150px"><a>Carrier</a></th>
+                        <th class="small text-center" style="width:60px"><a>Eq</a></th>
+                        <th class="small" style="width:150px"><a>Hauler</a></th>
+                        <th class="small" style="width:100px"><a>PRO#</a></th>
+                        <th class="small" style="width:100px"><a>PO#</a></th>
+                        <th class="small" style="width:100px"><a>BOL#</a></th>
+                        <th class="small text-center" style="width:80px"><a>Car Rate</a></th>
+                        <th class="small text-center" style="width:80px"><a>Cust Rate</a></th>
+                        <th class="small text-center" style="width:80px"><a>Profit</a></th>
+                        <th class="small text-center" style="width:80px"><a>Profit%</a></th>
+                        <th class="small text-center" style="width:70px"><a>Rate Con</a></th>
+                        <th class="small text-center" style="width:60px"><a>POD</a></th>
+                        <th class="small text-center" style="width:60px"><a>Car Inv</a></th>
+                        <th class="small" style="width:100px"><a>Sales Rep 1</a></th>
+                        <th class="small" style="width:100px"><a>Sales Rep 2</a></th>
+                        <th class="small text-center" style="width:60px"><a>TL/LTL</a></th>
+                      </tr>
+                    </thead>
+                    <tbody id="myLoadsRows"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="pager-container">
+                <div class="pager-group mt-1">
+                  <select class="pager-dropdownlist" style="width: 60px; text-align: right;"><option value="25">25&nbsp;&nbsp;</option><option selected value="50">50&nbsp;&nbsp;</option><option value="100">100&nbsp;&nbsp;</option></select>
+                  <span class="ml-1">Records per page</span>
+                </div>
+                <div class="pager-group ml-3">
+                  <div class="btn-group mt-1">
+                    <input type="button" value="&#xf104;" disabled class="pager-pagebutton fa">
+                    <input type="button" value="1" class="pager-pagebutton pager-pagebutton-selected">
+                    <input type="button" value="2" class="pager-pagebutton"><input type="button" value="3" class="pager-pagebutton">
+                    <input type="button" value="4" class="pager-pagebutton"><input type="button" value="5" class="pager-pagebutton">
+                    <input type="button" value="6" class="pager-pagebutton"><input type="button" value="7" class="pager-pagebutton">
+                    <input type="button" value="8" class="pager-pagebutton"><input type="button" value="9" class="pager-pagebutton">
+                    <input type="button" value="..." class="pager-pagebutton"><input type="button" value="12" class="pager-pagebutton">
+                    <input type="button" value="&#xf105;" class="pager-pagebutton fa">
+                  </div>
+                </div>
+                <div class="pager-group ml-3 mr-3 mt-1"><span>1 - 50 of 583 Total Record(s)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="modal fade" id="bulkStatusModal" role="dialog" aria-modal="true">
+        <div>
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header"><h5 class="modal-title">Bulk Status Change</h5></div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label text-sm-right">Loads</label>
+                      <label class="col-sm-9 col-form-label"><strong id="bulkLoads"></strong></label>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label text-sm-right text-danger">Change To</label>
+                      <div class="col-sm-9">
+                        <select id="ddlLoadStatusId" class="form-control">
+                          <option selected value="">-- Please Choose --</option>
+                          <option value="11">Pending</option><option value="1">Available</option><option value="17">Load Board</option>
+                          <option value="2">Committed</option><option value="3">Assigned</option><option value="24">Appointment</option>
+                          <option value="15">Missed Pickup</option><option value="4">Dispatched</option><option value="22">On Site - Pickup</option>
+                          <option value="5">Picked Up</option><option value="6">Enroute</option><option value="23">On Site - Delivery</option>
+                          <option value="7">Delivered</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row"><div class="col"></div></div>
+                <div class="row">
+                  <div class="col text-right">
+                    <input type="submit" value="Save" id="btnBulkSave" class="btn btn-primary">
+                    <button type="button" class="btn btn-secondary">Cancel</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="PleaseWait" class="PleaseWaitOff"></div>
+  <div id="PleaseWaitMsg" class="PleaseWaitMsgOff">
+    <div class="modal d-block" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <p>Please Wait</p>
+            <div class="progress">
+              <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script src="kit/demo-kit.js"></script>
+<script src="kit/myloads.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const modal = $('bulkStatusModal');
+  const PICK = ['L-01487', 'L-01486', 'L-01485'];
+  const rowOf = num => document.querySelector(`#myLoadsRows tr[data-load="${num}"]`);
+
+  EZDemo.start({
+    reset() {
+      EZMyLoads.render($('myLoadsRows'), EZMyLoads.SAMPLE);
+      $('ddlLoadStatusId').value = '';
+      $('bulkLoads').textContent = '';
+    },
+
+    async run(k) {
+      await k.sleep(1300);
+
+      // Tick the three assigned loads that are ready to roll (the app's checkbox is drawn by its label)
+      k.cam(1.35, k.centerOf(rowOf(PICK[1]), -260, 0));
+      for (const num of PICK) {
+        await k.moveTo(rowOf(num).querySelector('.ezl-checkbox label'), { mode: 'pointer' });
+        await k.click();
+        rowOf(num).querySelector('input[type=checkbox]').checked = true;
+        await k.sleep(250);
+      }
+      await k.sleep(400);
+
+      // Bulk Status Change > Dispatched
+      k.cam(1.15, { x: innerWidth / 2, y: 260 });
+      await k.press($('lbMassUpdateStatus'));
+      $('bulkLoads').textContent = PICK.join(', ');
+      k.showModal(modal);
+      await k.sleep(900);
+      await k.chooseSelect($('ddlLoadStatusId'), '4');
+      k.focusField(null);
+      await k.press($('btnBulkSave'), { hold: 300 });
+
+      // "Please Wait" over the dialog, then the list refreshes with the new status
+      k.pleaseWait(true);
+      await k.sleep(1300);
+      k.hideModal(modal);
+      PICK.forEach(num => {
+        const tr = rowOf(num);
+        EZMyLoads.setStatus(tr, 'DISP');
+        tr.querySelector('input[type=checkbox]').checked = false;
+      });
+      k.pleaseWait(false);
+      k.setCursor('arrow');
+      await k.sleep(700);
+      k.cam(1.45, k.centerOf(rowOf(PICK[1]).children[1], 160, 0));
+      await k.moveTo(k.centerOf(rowOf(PICK[2]).children[2], 0, 40), { mode: 'arrow', dur: 1000 });
+      await k.sleep(2800);
+      k.cam(1, k.full());
+      await k.sleep(1800);
+    },
+  });
+})();
+
+</script>
+</body>
+</html>

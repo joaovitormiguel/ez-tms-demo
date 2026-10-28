@@ -1,0 +1,1773 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>EZ TMS New Load Demo</title>
+<link rel="icon" type="image/png" href="vendor/img/favicon-32x32.png">
+<!-- Same stylesheets, versions and order as demo.ezloader.app (captured 28 Oct 2026) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="vendor/jquery-ui.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+<!-- The app uses Font Awesome Pro (licensed to EZ TMS). Published copies load the free set, with the
+     closest free icon wherever the app uses a Pro-only one. Local copies with the gitignored
+     vendor/fontawesome-pro folder switch back to the exact Pro icons (used for video renders). -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+<script src="kit/fa-switch.js"></script>
+<link rel="stylesheet" href="vendor/fontawesome-pro/css/all.css" onload="window.__ezUsePro && window.__ezUsePro()">
+<link rel="stylesheet" href="vendor/perfect-scrollbar.css">
+<link rel="stylesheet" href="vendor/jquery-stickytable.css">
+<link rel="stylesheet" href="vendor/Site.css">
+<link rel="stylesheet" href="vendor/Bootstrap-Overrides.css">
+<link rel="stylesheet" href="vendor/Colors.css">
+<link rel="stylesheet" href="vendor/Colors.light.css">
+<link rel="stylesheet" href="vendor/jquery.timepicker.min.css">
+<link rel="stylesheet" href="vendor/app-inline.css">
+<link rel="stylesheet" href="kit/demo-kit.css">
+</head>
+<body>
+
+<form id="PageForm" onsubmit="return false">
+  <div class="wrapper">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <nav id="sidebar" class="collapse show mCustomScrollbar mCS-autoHide mCS_no_scrollbar" style="overflow: visible;">
+      <div class="mCustomScrollBox mCS-minimal mCSB_vertical mCSB_outside" style="max-height: none;">
+        <div class="mCSB_container mCS_y_hidden mCS_no_scrollbar_y" style="position:relative; top:0; left:0;" dir="ltr">
+          <div class="sidebar-header">
+            <div class="sidebar-logo">
+              <img src="vendor/img/favicon-32x32.png" class="sidebar-item" alt="">
+            </div>
+          </div>
+          <div class="sidebar-menu-divider mt-0"></div>
+          <ul class="list-unstyled components" style="margin-left: 0px; margin-right:0px; padding-left:1px; padding-right:1px;">
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-tachometer-alt fa-fw"></i><span class="sidebar-item-text">Dashboards</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-truck-loading fa-fw"></i><span class="sidebar-item-text">Loads</span></a></li>
+            <li class="sidebar-item"><a class="ezl-menu-item"><i class="sidebar-item-icon fas fa-user-alt fa-fw"></i><span class="sidebar-item-text">Customers</span></a></li>
+            <li class="sidebar-item"><a class="ezl-menu-item"><i class="sidebar-item-icon fas fa-truck fa-fw"></i><span class="sidebar-item-text">Carriers</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-donate fa-fw" data-fa-free="fa-donate" data-fa-pro="fa-badge-dollar"></i><span class="sidebar-item-text">Sales</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-pallet fa-fw" data-fa-free="fa-pallet" data-fa-pro="fa-pallet-alt"></i><span class="sidebar-item-text">LTL</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-calculator fa-fw" data-fa-free="fa-calculator" data-fa-pro="fa-abacus"></i><span class="sidebar-item-text">Accounting</span></a></li>
+            <li class="sidebar-item"><a class="ezl-menu-item"><i class="sidebar-item-icon fas fa-file-alt fa-fw"></i><span class="sidebar-item-text">Reports</span></a></li>
+            <li class="sidebar-item" style="color: orange; font-size: 0.8rem;">
+              <div class="sidebar-menu-divider"></div>
+              <a class="sidebar-menu-help btn text-left"><i class="sidebar-item-icon far fa-question-circle"></i><span class="sidebar-item-text">Need Help? Click Here</span></a>
+            </li>
+            <li class="sidebar-item">
+              <div class="sidebar-menu-divider"></div>
+              <button type="button" class="sidebar-menu-collapse btn text-left">
+                <i class="sidebar-item-icon fas fa-arrow-right d-none"></i>
+                <i class="sidebar-item-icon fas fa-arrow-left"></i>
+                <span class="sidebar-item-text">Collapse Menu</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div id="content">
+      <!-- ===================== HEADER ===================== -->
+      <header id="pageHeader" class="navbar-nav-title navbar navbar-expand flex-column flex-md-row bd-navbar mb-0 shadow">
+        <div class="container-fluid navbar-nav-title">
+          <div class="navbar-nav">
+            <ul class="navbar-nav bd-navbar-nav flex-row">
+              <li><button type="button" id="sidebarCollapse" class="btn btn-primary"><i class="fas fa-align-left"></i></button></li>
+            </ul>
+            <ul id="headerLogo" class="navbar-nav bd-navbar-nav flex-row">
+              <li><div class="nav-item h3 mb-0 ml-2 mr-2"><img class="navbar-header-icon" src="vendor/img/ez-tms-logo.png" alt="EZ TMS" style="border-width:0px;"></div></li>
+            </ul>
+          </div>
+
+          <ul id="pageOptions" class="navbar-nav flex-row ml-md-auto xd-none d-md-flex">
+            <li class="ml-2 mr-2">
+              <div class="input-group ezl-loadsearch flex-nowrap input_group_border">
+                <div class="input-group-prepend">
+                  <button class="btn ezl-loadsearch-icon btn-outline-secondary navbar-search-btn border-0" type="button" disabled>
+                    <i class="fas fa-search" style="font-weight: 400; padding-top:4px"></i>
+                  </button>
+                </div>
+                <input type="text" class="form-control ezl-loadsearch-text e-ejinputtext e-customlocationfilter pl-0 navbar-search-text border-0 no-focus-border ui-autocomplete-input" placeholder="Load # Search..." tabindex="-1">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary navbar-search-btn border-0" type="button" disabled style="background-color: inherit !important; color: var(--secondary) !important; cursor: default;">
+                    <i class="fas fa-times" style="font-weight: 400; display: none;"></i>
+                  </button>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item dropdown text-primary ml-2 mr-2">
+              <button class="btn btn-success text-nowrap mr-2" type="button" id="btnAddNewItemDdl" style="margin-top: 1px; padding-bottom: 4px;">+ Add New</button>
+              <div class="dropdown-menu dropdown-menu-right" id="addNewMenu">
+                <a id="hlNewLoad" class="dropdown-item"><i class="mr-3 fas fa-truck-loading fa-fw"></i>New Load</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-address-book fa-fw"></i>New Prospect</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-user fa-fw"></i>New Customer</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-truck fa-fw"></i>New Carrier</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-tasks fa-fw"></i>New Task</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-edit fa-fw"></i>New Note</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-phone fa-fw"></i>New Phone Note</a>
+                <a class="dropdown-item"><i class="mr-3 fas fa-quote-right fa-fw"></i>New Quote</a>
+              </div>
+            </li>
+            <div id="upNotifications">
+              <div class="ml-2 mr-2">
+                <li class="nav-item" style="cursor: pointer;"><span><i class="fas fa-bell pt-1 fa-1x"></i></span></li>
+              </div>
+            </div>
+            <div id="upAccountingNotifications">
+              <div class="mr-4 ml-2">
+                <li class="nav-item" style="cursor: pointer;">
+                  <span class="ml-3 badge badge-pill bg-ezl-highlight position-absolute">12</span>
+                  <span><i class="fas fa-comment-dollar pt-1 fa-1x" data-fa-free="fa-comment-dollar" data-fa-pro="fa-comment-alt-dollar"></i></span>
+                </li>
+              </div>
+            </div>
+            <li></li>
+            <li id="pageToasterAnchor">&nbsp;</li>
+            <li class="nav-item dropdown pl-1">
+              <div class="rounded-circle text-center portrait-wrapper portrait-wrapper-small"><div class="font-weight-bold">AT</div></div>
+            </li>
+          </ul>
+        </div>
+      </header>
+
+      <div class="ezscreen" data-screen="myloads">
+      <div class="container-fluid navandfilter-header mt-1 mb-0 sticky-top">
+        <table width="100%" class="navandfilter-table">
+          <tbody><tr>
+            <td class="navandfilter-thin">
+              <div class="form-row">
+                <div class="col-12">
+                  <div class="float-left navandfilter-div-left ml-1">
+                    <div class="thinbreadcrumb">
+                      <span class="text-muted mt-1"><span><a title="Home Page">Home</a></span><span> &gt; </span><span><a>Loads</a></span><span> &gt; </span></span>
+                      <span class="page-title-text">My Loads</span>
+                    </div>
+                  </div>
+                  <div class="float-right navandfilter-div-right mt-1"><div class="mt-1"><a class="btn btn-outline-primary align-top btn-title"><i class="fas fa-fw fa-cog"></i></a><a class="btn btn-outline-primary align-top btn-title"><i class="fas fa-fw fa-redo-alt"></i></a></div></div>
+                </div>
+              </div>
+              <div class="mt-1"><hr></div>
+            </td>
+          </tr></tbody>
+        </table>
+      </div>
+      <div class="container-fluid">
+        <div style="min-width: 830px;">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row" style="min-height:32px">
+                <div class="col-xl-5 col-sm-7 d-flex flex-nowrap">
+                  <div class="h5 text-nowrap mb-0" style="padding-top: 2px;">My Loads List</div>
+                  <div class="ml-4" style="padding-top: 1px;">
+                    <a id="lbMassUpdateStatus" class="btn btn-primary btn-title text-nowrap"><i class="fa-fw fas fa-tasks"></i><span class="ml-2">Bulk Status Change</span></a>
+                  </div>
+                  <div style="padding-top: 1px;">
+                    <a class="btn btn-primary btn-title text-nowrap"><i class="fa-fw fas fa-chalkboard"></i><span class="ml-2">Bulk Load Board Post</span></a>
+                  </div>
+                </div>
+                <div class="col-xl-4 col-sm-1 text-small text-primary pt-1"><span></span></div>
+                <div class="col-xl-3 col-sm-4 text-right d-print-none pt-1">
+                  <span><select class="LoadSearchResultsType"><option selected value="1">Default</option><option value="4">TL</option><option value="5">LTL</option><option value="6">Accounting</option></select></span>
+                  <a class="text-ezl"><i class="fa-fw fas fa-table" data-fa-free="fas" data-fa-pro="fal"></i></a>
+                  <a class="text-ezl"><i class="fa-fw fas fa-file-download text-ezl"></i></a>
+                  <a class="pointer text-ezl"><i class="fas fa-print"></i></a>
+                  <a class="text-ezl"><i class="fa-fw fas fa-redo-alt"></i></a>
+                </div>
+              </div>
+              <hr class="mt-1 mb-3">
+              <div class="wrapper wrapper_auto load_search_wrapper" style="height: 455px; overflow: hidden; position: relative;">
+                <div class="sticky-wrap overflow-y ps ps--active-x ps--active-y">
+                  <table class="table table-striped table-sm table-bordered-black mb-0 sticky-header load_search_table sticky-enabled" style="table-layout: fixed; margin: 0px; width: 100%;">
+                    <thead class="thead-dark text-nowrap">
+                      <tr>
+                        <th style="width:140px"><span class="small text-nowrap" style="display: inline-block;min-width:130px"><span><a><i class="fa-fw fas fa-check-square"></i></a></span> <a>Load #</a></span></th>
+                        <th class="small" style="width:80px"><a>Status</a></th>
+                        <th class="small" style="width:150px"><a>Customer</a></th>
+                        <th class="small" style="width:100px"><a>Date Booked</a></th>
+                        <th class="small" style="width:150px"><a>PU Name</a></th>
+                        <th class="small" style="width:200px"><a>Pickup</a></th>
+                        <th class="small" style="width:70px"><a>PU Date</a></th>
+                        <th class="small" style="width:100px"><a>PU Time</a></th>
+                        <th class="small" style="width:150px"><a>DO Name</a></th>
+                        <th class="small" style="width:200px"><a>Drop off</a></th>
+                        <th class="small" style="width:70px"><a>DO Date</a></th>
+                        <th class="small" style="width:100px"><a>DO Time</a></th>
+                        <th class="small" style="width:70px"><a>Tracking</a></th>
+                        <th class="small" style="width:150px"><a>Carrier</a></th>
+                        <th class="small text-center" style="width:60px"><a>Eq</a></th>
+                        <th class="small" style="width:150px"><a>Hauler</a></th>
+                        <th class="small" style="width:100px"><a>PRO#</a></th>
+                        <th class="small" style="width:100px"><a>PO#</a></th>
+                        <th class="small" style="width:100px"><a>BOL#</a></th>
+                        <th class="small text-center" style="width:80px"><a>Car Rate</a></th>
+                        <th class="small text-center" style="width:80px"><a>Cust Rate</a></th>
+                        <th class="small text-center" style="width:80px"><a>Profit</a></th>
+                        <th class="small text-center" style="width:80px"><a>Profit%</a></th>
+                        <th class="small text-center" style="width:70px"><a>Rate Con</a></th>
+                        <th class="small text-center" style="width:60px"><a>POD</a></th>
+                        <th class="small text-center" style="width:60px"><a>Car Inv</a></th>
+                        <th class="small" style="width:100px"><a>Sales Rep 1</a></th>
+                        <th class="small" style="width:100px"><a>Sales Rep 2</a></th>
+                        <th class="small text-center" style="width:60px"><a>TL/LTL</a></th>
+                      </tr>
+                    </thead>
+                    <tbody id="myLoadsRows"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="pager-container">
+                <div class="pager-group mt-1">
+                  <select class="pager-dropdownlist" style="width: 60px; text-align: right;"><option value="25">25&nbsp;&nbsp;</option><option selected value="50">50&nbsp;&nbsp;</option><option value="100">100&nbsp;&nbsp;</option></select>
+                  <span class="ml-1">Records per page</span>
+                </div>
+                <div class="pager-group ml-3">
+                  <div class="btn-group mt-1">
+                    <input type="button" value="&#xf104;" disabled class="pager-pagebutton fa">
+                    <input type="button" value="1" class="pager-pagebutton pager-pagebutton-selected">
+                    <input type="button" value="2" class="pager-pagebutton"><input type="button" value="3" class="pager-pagebutton">
+                    <input type="button" value="4" class="pager-pagebutton"><input type="button" value="5" class="pager-pagebutton">
+                    <input type="button" value="6" class="pager-pagebutton"><input type="button" value="7" class="pager-pagebutton">
+                    <input type="button" value="8" class="pager-pagebutton"><input type="button" value="9" class="pager-pagebutton">
+                    <input type="button" value="..." class="pager-pagebutton"><input type="button" value="12" class="pager-pagebutton">
+                    <input type="button" value="&#xf105;" class="pager-pagebutton fa">
+                  </div>
+                </div>
+                <div class="pager-group ml-3 mr-3 mt-1"><span>1 - 50 of 583 Total Record(s)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="ezscreen" data-screen="newload" hidden>
+      <div class="container-fluid navandfilter-header mt-1 mb-0 sticky-top">
+        <table width="100%" class="navandfilter-table">
+          <tbody><tr>
+            <td class="navandfilter-thin">
+              <div class="form-row">
+                <div class="col-12">
+                  <div class="float-left navandfilter-div-left ml-1">
+                    <div class="thinbreadcrumb">
+                      <span class="text-muted mt-1"></span>
+                      <span class="page-title-text">New Load</span>
+                    </div>
+                  </div>
+                  <div class="float-right navandfilter-div-right mt-1"></div>
+                </div>
+              </div>
+              <div class="mt-1"><hr></div>
+            </td>
+          </tr></tbody>
+        </table>
+      </div>
+      <div class="container-fluid"></div>
+      </div>
+      <div class="ezscreen" data-screen="load" hidden>
+      <div class="container-fluid navandfilter-header mt-1 mb-0 sticky-top">
+        <table width="100%" class="navandfilter-table">
+          <tbody><tr>
+            <td class="navandfilter-thin">
+              <div class="form-row">
+                <div class="col-12">
+                  <div class="float-left navandfilter-div-left ml-1">
+                    <div class="thinbreadcrumb">
+                      <span class="text-muted mt-1"><span><a title="Home Page">Home</a></span><span> &gt; </span><span><a>Loads</a></span></span>
+                      <span class="text-center mt-1 d-inline-block" style="width: 19.71px;">&gt;</span><span class="page-title-text">Load #L-01489</span><span class="pl-1"><a class="text-ezl" style="vertical-align: top;"><i class="icon-small fas fa-fw fa-arrow-left"></i></a><a class="text-ezl" style="vertical-align: top;"><i class="icon-small fas fa-fw fa-arrow-right"></i></a></span>
+                    </div>
+                  </div>
+                  <div class="float-right navandfilter-div-right mt-1"><div class="mt-1"><a class="btn-title btn btn-outline-primary"><i class="fa-fw fas fa-copy"></i>Copy Load</a><div class="d-inline-block"><a class="btn-title btn btn-outline-primary"><i class="fa-fw fas fa-envelope"></i>Request Update</a></div><a class="btn-title btn btn-outline-primary"><i class="fa-fw fas fa-layer-group"></i>Create Multi-Leg</a><a class="btn btn-title btn-navbar btn-outline-primary"><i class="fas fa-fw fa-redo-alt"></i></a></div></div>
+                </div>
+              </div>
+              <div class="mt-1"><hr></div>
+            </td>
+          </tr></tbody>
+        </table>
+      </div>
+      <div class="container-fluid">
+  
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="w-100 text-center mb-2">
+        <a id="hlLoadViewDetailsSection" class="h5" href="#loadViewDetailsSection">Details</a>
+      </div>
+      <div id="loadDetailsCard">
+        <div class="card mb-3 card-section-header">
+          <div class="card-body card-body-section-header">
+            <div class="d-flex flex-wrap">
+              <div class="mr-3 text-center flex-fill text-muted">Assigned</div>
+              <div class="mr-3 text-center flex-fill text-muted">BOL#</div>
+              <div class="mr-3 text-center flex-fill text-muted">TL</div>
+              <div class="mr-3 text-center flex-fill text-muted">
+                <div class="d-inline-block">Chattanooga, TN</div>
+                <i class="ml-2 mr-2 fas fa-arrow-right"></i>
+                <div class="d-inline-block">Savannah, GA</div>
+              </div>
+              <div class="w-100 d-lg-none"></div>
+              <div class="mr-3 text-center flex-fill text-muted">Pickup: 10/29/2026</div>
+              <div class="mr-3 text-center flex-fill text-muted">Dropoff: 10/30/2026</div>
+              <div class="flex-shrink-1">
+                <a class="text-ezl">
+                  <i class="fas fa-lg fa-angle-down"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="w-100 text-center mb-2">
+        <a id="hlLoadViewDocumentSection" class="h5" href="#loadViewDocumentSection">Documents</a>
+      </div>
+      <div id="ucLoadViewDocumentSection_upDocumentSectionHeader">
+        <div class="card mb-3 card-section-header">
+          <div class="card-body card-body-section-header">
+            <div class="d-flex flex-wrap">
+              <div class="text-center flex-fill font-weight-bold text-red">No Documents Yet</div>
+              <div class="flex-shrink-1">
+                <a class="text-ezl">
+                  <i class="fas fa-lg fa-angle-down"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="w-100 text-center mb-2">
+        <a id="hlLoadViewCustomerSection" class="h5" href="#loadViewCustomerSection">Customer - Southern Paper Co.</a>
+      </div>
+      <div id="ucLoadViewCustomerSection_upLoadViewCustomerSection">
+        <div class="card mb-3 card-section-header">
+          <div class="card-body card-body-section-header">
+            <div class="d-flex flex-wrap">
+              <div class="mr-3 text-center flex-fill text-muted">Dana Whitfield</div>
+              <div class="mr-3 text-center flex-fill text-muted">Southern Paper Co.</div>
+              <div class="mr-3 text-center flex-fill text-muted">(423) 555-0142</div>
+              <div class="mr-3 text-center flex-fill text-muted">dwhitfield@email.com</div>
+              <div class="mr-3 text-center flex-fill text-muted">Rep: Alex Turner</div>
+              <div class="mr-3 text-center flex-fill text-muted">Limit: 50000.00</div>
+              <div class="flex-shrink-1">
+                <a class="text-ezl">
+                  <i class="fas fa-lg fa-angle-down"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div id="ucLoadViewCarrierSection_upLoadViewCarrierSection">
+        <div class="w-100 d-flex flex-wrap mb-2">
+          <div class="mr-3 text-center flex-fill align-self-center">
+            <a id="hlLoadViewCarrierSection" class="h5" href="#loadViewCarrierSection">Carrier - BLUE RIDGE TRANSPORT LLC</a>
+          </div>
+        </div>
+        <div id="ucLoadViewCarrierSection_divLoadViewCarrierSectionCardHeader" class="card mb-3 card-section-header">
+          <div class="card-body card-body-section-header">
+            <div class="d-flex flex-wrap">
+              <div class="mr-3 text-center flex-fill text-muted">BLUE RIDGE TRANSPORT LLC</div>
+              <div class="mr-3 text-center flex-fill text-muted">MC# 784512</div>
+              <div class="mr-3 text-center flex-fill text-muted">(865) 555-0198</div>
+              <div class="w-100 d-lg-none"></div>
+              <div class="mr-3 text-center flex-fill text-muted">dispatch@email.com</div>
+              <div class="mr-3 text-center flex-fill text-muted">Knoxville, TN</div>
+              <div class="flex-shrink-1">
+                <a class="text-ezl">
+                  <i class="fas fa-lg fa-angle-down"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="upShipmentTracking"></div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="w-100 text-center mb-2">
+        <a id="hlLoadViewAccountingSection" class="h5" href="#loadViewAccountingSection">Accounting</a>
+      </div>
+      <div id="loadAccounting">
+        <div class="card mb-3 card-section-header">
+          <div class="card-body card-body-section-header">
+            <div class="d-flex flex-wrap">
+              <div class="mr-3 text-center flex-fill text-muted">Carrier Invoice #</div>
+              <div class="mr-3 text-center flex-fill text-muted">Total AP: $1,925.00</div>
+              <div class="mr-3 text-center flex-fill text-muted">Invoice Date:</div>
+              <div class="mr-3 text-center flex-fill text-muted">Customer Balance: $2,450.00</div>
+              <div class="mr-3 text-center flex-fill text-muted">Net Profit:
+                <span id="ucLoadViewAccountingSection_spnCustomerNetProfit" class="font-weight-bold green-number">$525.00 (21%)</span>
+              </div>
+              <div class="flex-shrink-1">
+                <a class="text-ezl">
+                  <i class="fas fa-lg fa-angle-down"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="w-100 text-center mb-2">
+        <a id="hlLoadViewCheckCallsSection" class="h5" href="#loadViewCheckCallsSection">Check Calls</a>
+      </div>
+      <div id="ucLoadViewCheckCallsSection_upCheckCallsSectionHeader">
+        <div class="card mb-3 card-section-header">
+          <div class="card-body card-body-section-header">
+            <div class="d-flex flex-wrap">
+              <div class="text-center flex-fill font-weight-bold text-red">No Check Calls Completed Yet</div>
+              <div class="flex-shrink-1">
+                <a class="text-ezl">
+                  <i class="fas fa-lg fa-angle-down"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="w-100 text-center mb-2">
+        <a id="hlLoadViewTaskSection" class="h5" href="#loadViewTaskSection">Tasks</a>
+      </div>
+      <div id="ucLoadViewTasksSection_upLoadViewTaskSection">
+        <div class="card mb-3 card-section-header">
+          <div class="card-body card-body-section-header">
+            <div class="d-flex flex-wrap">
+              <div class="text-center flex-fill font-weight-bold text-red">No Active Tasks</div>
+              <div class="mr-3 text-center text-muted">
+                <i class="fas fa-check"></i>0</div>
+              <div class="flex-shrink-1">
+                <a class="text-ezl">
+                  <i class="fas fa-lg fa-angle-down"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="w-100 text-center mb-2">
+        <a id="hlLoadViewClaimSection" class="h5" href="#loadViewClaimSection">Claims</a>
+      </div>
+      <div id="ucLoadViewClaimSection_upClaimSectionHeader">
+        <div class="card mb-3 card-section-header">
+          <div class="card-body card-body-section-header">
+            <div class="d-flex flex-wrap">
+              <div class="text-center flex-fill font-weight-bold text-red">No Claims</div>
+              <div class="flex-shrink-1">
+                <a class="text-ezl">
+                  <i class="fas fa-lg fa-angle-down"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="w-100 text-center mb-2">
+        <a id="hlLoadViewExternalSyncSection" class="h5" href="#loadViewExternalSyncSection">External Sync&amp;Location Tracking</a>
+      </div>
+      <div id="ucLoadViewExternalSyncSection_upExternalSyncSectionHeader">
+        <div class="card mb-3 card-section-header">
+          <div class="card-body card-body-section-header">
+            <div class="d-flex flex-wrap">
+              <div class="text-center flex-fill font-weight-bold text-red">Sync/Location Tracking Not Started</div>
+              <div class="justify-content-end flex-shrink-1">
+                <a class="text-ezl">
+                  <i class="fas fa-lg fa-angle-down"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="w-100 text-center mb-2">
+        <a id="hlLoadViewAutomationRequestSection" class="h5" href="#loadViewAutomationRequestSection">Automated Workflow</a>
+      </div>
+      <div id="ucLoadViewAutomationRequestsSection_upLoadViewAutomationRequestSection">
+        <div class="card mb-3 card-section-header">
+          <div class="card-body card-body-section-header">
+            <div class="d-flex flex-wrap">
+              <div class="text-center flex-fill font-weight-bold text-red">No Active Automation Requests</div>
+              <div class="mr-3 text-center text-muted">
+                <i class="fas fa-check"></i>0</div>
+              <div class="flex-shrink-1">
+                <a class="text-ezl">
+                  <i class="fas fa-lg fa-angle-down"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="PageBody_upLoadMultiCarrierCopy"></div>
+</div>
+      </div>
+
+      <div class="modal fade" id="ucCreateLoad" role="dialog" aria-modal="true">
+        <div class="modal-dialog modal-xl">
+          <div>
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="nlTitle">New Load </h5>
+                <div id="pnlLoadCapacityIndicator" class="h5 pr-3" hidden><span class="badge badge-pill badge-primary">Truckload</span></div>
+                <div></div>
+              </div>
+              <div class="modal-body">
+                <div id="pnlSelectCustomer">
+                  <div class="row">
+                    <div class="form-group col-sm-12">
+                      <label>Customer</label>
+                      <input type="text" id="txtNewLoadCustomerName" class="form-control">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="row"><div class="col text-danger">Please select a customer. <span></span></div></div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-right">
+                      <input type="submit" value="Select Customer" id="btnNextSelectCustomer" class="btn btn-primary" disabled>
+                      <input type="submit" value="Cancel" class="btn btn-danger">
+                    </div>
+                  </div>
+                </div>
+                <div id="pnlLoadDetails" hidden>
+            <div class="row">
+              <div class="col">
+                <table class="table table-sm table-striped border border-dark">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th colspan="2">Outstanding Balance</th>
+                      <th>Days</th>
+                      <th class="text-right">Total Due</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="font-weight-bold">Sales</td>
+                      <td class="text-right pr-4">$4,900.00</td>
+                      <td class="font-weight-bold">00-30</td>
+                      <td class="text-right">$4,900.00</td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-bold">Invoiced</td>
+                      <td class="text-right pr-4">$12,250.00</td>
+                      <td class="font-weight-bold">31-60</td>
+                      <td class="text-right">$0.00</td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-bold">Total</td>
+                      <td class="text-right pr-4">$17,150.00</td>
+                      <td class="font-weight-bold">61-90</td>
+                      <td class="text-right">$0.00</td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-bold">Credit Limit</td>
+                      <td class="text-right pr-4">$50,000.00</td>
+                      <td class="font-weight-bold">90+</td>
+                      <td class="text-right">$0.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-sm-12 col-lg-6">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="mb-2 d-inline-block">Load Details</h5>
+                    <div class="custom-control custom-checkbox d-inline-block ml-3">
+                      <input id="cbCriticalLoad" type="checkbox" class="custom-control-input">
+                      <label for="cbCriticalLoad" class="custom-control-label">Critical Load</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                    <select id="ddlLoadCapacityId" class="form-control">
+                      <option value="">Select Mode</option>
+                      <option selected="selected" value="1">Truckload</option>
+                      <option value="2">Less Than Truckload</option>
+                    </select>
+                    <span class="requiredddl"></span>
+                  </div>
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                    <input type="text" id="txtPoNumber" class="form-control" placeholder="PO #">
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="text" id="txtBolNumber" class="form-control" placeholder="BOL #">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                    <input type="text" id="txtSalesRepName" class="form-control" placeholder="Sales Rep 1" value="Alex Turner">
+                    <span class="required"></span>
+                  </div>
+                  <div class="col-sm-2 mb-3 mb-sm-0">
+                    <input type="text" value="100" id="txtSalesRepCommission" class="form-control numeric" placeholder="GP %">
+                  </div>
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                    <input type="text" id="txtSalesRep2Name" class="form-control" placeholder="Sales Rep 2">
+                  </div>
+                  <div class="col-sm-2 mb-3 mb-sm-0">
+                    <input type="text" id="txtSalesRep2Commission" class="form-control numeric" placeholder="GP %">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                    <select id="ddlEquipmentTypeId" class="form-control">
+                      <option selected value="">Equipment Type</option>
+                      <option value="133">Custom Van Type (c)</option>
+                      <option value="109">10' Container</option>
+                      <option value="110">20' Container</option>
+                      <option value="111">20' High Cube Container</option>
+                      <option value="112">40' Container</option>
+                      <option value="113">40' High Cube Container</option>
+                      <option value="129">53' VAN (c)</option>
+                      <option value="1">Auto Carrier</option>
+                      <option value="130">Box Truck (c)</option>
+                      <option value="48">CONESTOGA</option>
+                      <option value="108">Container</option>
+                      <option value="2">Double Drop</option>
+                      <option value="41">DRIVE-AWAY</option>
+                      <option value="3">Dump Trailer</option>
+                      <option value="4">Flatbed</option>
+                      <option value="5">Flatbed Hazardous</option>
+                      <option value="6">Flatbed or Step Deck</option>
+                      <option value="7">Flatbed or Van</option>
+                      <option value="53">FLATBED TEAM</option>
+                      <option value="8">Flatbed w/Pallet Exchange</option>
+                      <option value="9">Flatbed w/Sides</option>
+                      <option value="10">Flatbed w/Tarps</option>
+                      <option value="11">Flatbed/Van/Reefer</option>
+                      <option value="12">Hopper Bottom</option>
+                      <option value="13">Hotshot</option>
+                      <option value="45">LANDALL</option>
+                      <option value="14">Lowboy</option>
+                      <option value="35">LTL</option>
+                      <option value="15">Maxi</option>
+                      <option value="16">Power Only</option>
+                      <option value="17">Reefer</option>
+                      <option value="18">Reefer Hazardous</option>
+                      <option value="19">Reefer or Van</option>
+                      <option value="20">Reefer w/Pallet Exchange</option>
+                      <option value="21">Reefer/Flatbed/Van</option>
+                      <option value="22">Removable Gooseneck</option>
+                      <option value="23">Step Deck</option>
+                      <option value="37">STEPDECK WITH RAMPS</option>
+                      <option value="135">Straight Box Truck</option>
+                      <option value="127">STRAIGHT TRUCK (c)</option>
+                      <option value="24">Tanker</option>
+                      <option value="25">Van</option>
+                      <option value="27">Van Air-Ride</option>
+                      <option value="26">Van Hazardous</option>
+                      <option value="28">Van or Flatbed</option>
+                      <option value="29">Van or Reefer</option>
+                      <option value="30">Van Vented</option>
+                      <option value="31">Van w/Curtains</option>
+                      <option value="40">VAN W/LIFTGATE</option>
+                      <option value="32">Van w/Pallet Exchange</option>
+                      <option value="52">VAN W/TEAM</option>
+                      <option value="33">Van/Reefer/Flatbed</option>
+                    </select>
+                    <span class="requiredddl"></span>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="custom-control custom-checkbox mr-3">
+                      <input id="cbTarpsRequired" type="checkbox" class="custom-control-input">
+                      <label for="cbTarpsRequired" class="custom-control-label">Tarps Required</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="custom-control custom-checkbox">
+                      <input id="cbOverDimensional" type="checkbox" class="custom-control-input">
+                      <label for="cbOverDimensional" class="custom-control-label">Over Dimensional</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3 mb-3 mb-sm-0"></div>
+                  <div class="col-sm-3 mb-3 mb-sm-0"></div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group row">
+                      <div class="col-sm-12 col-xl-6">
+                        <select id="ctl00_lvReferenceNumbers_ctrl0_ddlReferenceNumberTypeID" class="form-control">
+                          <option selected="selected" value="">Reference Number</option>
+                          <option value="-2">&lt;REMOVE REFERENCE NUMBER&gt;</option>
+                          <option value="1">PO Number</option>
+                          <option value="2">BOL Number</option>
+                          <option value="4">Ship Ref</option>
+                          <option value="5">Job Number</option>
+                          <option value="6">Job Name</option>
+                          <option value="7">Sales Order</option>
+                          <option value="8">RGA#</option>
+                          <option value="9">RA#</option>
+                          <option value="10">Quote ID</option>
+                          <option value="11">Container Number</option>
+                          <option value="12">Seal Number</option>
+                          <option value="13">Shipment ID</option>
+                          <option value="14">EDI Reference</option>
+                        </select>
+                      </div>
+                      <div class="col-sm-12 col-xl-6">
+                        <input type="text" id="ctl00_lvReferenceNumbers_ctrl0_txtReferenceNumber" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12"></div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                    <input type="text" id="txtCustomerDeclaredValue" class="form-control numeric" placeholder="$$ Value of Load">
+                  </div>
+                  <div class="col-sm-4"></div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-lg-6">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="mb-2">Customer Rate</h5>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 mb-3 mb-sm-0">
+                    <input type="text" id="txtCustomerFlatRate" class="form-control numeric" placeholder="Flat Rate">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                    <select id="ddlCustomerUOMId" class="form-control">
+                      <option selected="selected" value="">Unit</option>
+                      <option value="15"></option>
+                      <option value="16"></option>
+                      <option value="1"></option>
+                      <option value="2">Bag</option>
+                      <option value="3">CWT</option>
+                      <option value="4">Flat</option>
+                      <option value="13">Hours</option>
+                      <option value="5">LBS</option>
+                      <option value="6">Miles</option>
+                      <option value="7">Pallet</option>
+                      <option value="8">Roll</option>
+                      <option value="9">Skid</option>
+                      <option value="14">This is a Unit of Measure Test</option>
+                      <option value="10">Tons</option>
+                      <option value="11">TTT</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="text" id="txtCustomerQuantity" class="form-control numeric" placeholder="Qty">
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="text" id="txtCustomerRatePerUnit" class="form-control numeric" placeholder="Unit Rate">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-9 mb-3 mb-sm-0">
+                    <input type="text" id="txtCustomerOtherCostsDescription1" class="form-control" placeholder="Other Cost 1">
+                  </div>
+                  <div class="col-sm-3">
+                    <input type="text" id="txtCustomerOtherCostsGrossCharges1" class="form-control numeric" placeholder="Cost">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-9 mb-3 mb-sm-0">
+                    <input type="text" id="txtCustomerOtherCostsDescription2" class="form-control" placeholder="Other Cost 2">
+                  </div>
+                  <div class="col-sm-3">
+                    <input type="text" id="txtCustomerOtherCostsGrossCharges2" class="form-control numeric" placeholder="Cost">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-9 mb-3 mb-sm-0">
+                    <input type="text" id="txtCustomerOtherCostsDescription3" class="form-control" placeholder="Other Cost 3">
+                  </div>
+                  <div class="col-sm-3">
+                    <input type="text" id="txtCustomerOtherCostsGrossCharges3" class="form-control numeric" placeholder="Cost">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-9 mb-3 mb-sm-0">
+                    <select id="ddlCustomerPricingTypeID" class="form-control">
+                      <option value="">Pricing</option>
+                      <option value="1">Contract</option>
+                      <option selected="selected" value="2">Spot Market</option>
+                    </select>
+                    <span id="spnCustomerPricingTypeRequired" class="required"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col text-danger" id="divOverLimitMsg"></div>
+            </div>
+            <div class="row">
+              <div class="col text-danger" id="divErrorMessage"></div>
+            </div>
+            <div class="row">
+              <div class="col"></div>
+            </div>
+            <div class="row">
+              <div class="col text-right">
+                <input type="submit" value="Previous" id="btnPrevious1" class="btn btn-secondary">
+                <input type="submit" value="Next" id="btnNextDetails" class="btn btn-primary">
+                <input type="submit" value="Cancel" id="btnCancel2" class="btn btn-danger">
+              </div>
+            </div>
+          </div>
+                <div id="pnlStopItems" hidden>
+            <div id="ctl00_lvStops_ctrl0_pnlStop" class="load-stop-panel">
+              <div class="card mb-3">
+                <div class="card-header h5">
+                  <div>Origin
+                    <small class="text-ezl">
+                      <span class="ml-2" style="text-align: right">
+                        <a id="ctl00_lvStops_ctrl0_btnAddStop" class="ml-1 btn btn-primary btn-sm">
+                          <i class="fa-fw fas fa-store-alt"></i>Add Stop</a>
+                        <a id="ctl00_lvStops_ctrl0_btnClearStop">
+                          <i class="fa-fw fas fa-eraser"></i>
+                        </a>
+                      </span>
+                    </small>
+                  </div>
+                </div>
+                <div class="card-body DataRow NewLoadStopDataRow" data-loadstopsequence="1">
+                  <div class="form-group row">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <input type="text" id="ctl00_lvStops_ctrl0_txtStopDate" class="form-control ezdemo-date" placeholder="mm/dd/yyyy"><svg class="ezdemo-cal" viewBox="0 0 15 16"><path fill="#000" d="M3.5 0h1.5v2h5V0h1.5v2H13a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1.5V0zM1.5 6v8c0 .3.2.5.5.5h11c.3 0 .5-.2.5-.5V6h-12z"/></svg>
+                          <span id="ctl00_lvStops_ctrl0_spnRStopDate" class="required"></span>
+                        </div>
+                        <div class="col-sm-4">
+                          <input type="text" id="ctl00_lvStops_ctrl0_txtEarlyTime" class="form-control NewLoadEarlyTime ui-timepicker-input" placeholder="Early Time">
+                        </div>
+                        <div class="col-sm-4">
+                          <input type="text" id="ctl00_lvStops_ctrl0_txtLateTime" class="form-control NewLoadLateTime ui-timepicker-input" placeholder="Late Time">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                      <input type="text" id="ctl00_lvStops_ctrl0_txtStopName" class="form-control NewLoadStopName" placeholder="Name">
+                      <span id="ctl00_lvStops_ctrl0_spnRStopName" class="required"></span>
+                    </div>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                      <div class="row">
+                        <div class="col-sm-6 mb-3 mb-sm-0" style="padding-right: 0px">
+                          <span class="h-100 d-flex align-content-center">
+                            <div class="custom-control custom-checkbox my-auto">
+                              <input id="ctl00_lvStops_ctrl0_cbAddLocationInd" type="checkbox" class="custom-control-input">
+                              <label for="ctl00_lvStops_ctrl0_cbAddLocationInd" class="custom-control-label">Save Location</label>
+                            </div>
+                          </span>
+                        </div>
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                          <select id="ctl00_lvStops_ctrl0_ddlStopCountry" class="form-control NewLoadStopCountry">
+                            <option value="">Pick Country</option>
+                            <option selected value="US">US - United States of America</option>
+                            <option value="CA">CA - Canada</option>
+                            <option value="MX">MX - Mexico</option>
+                            <option value="ZZ">ZZ - International</option>
+                          </select>
+                          <span id="ctl00_lvStops_ctrl0_Span4" class="required"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                      <input type="text" id="ctl00_lvStops_ctrl0_txtStopAddress1" class="form-control NewLoadStopAddress1 pac-target-input" placeholder="Address 1">
+                    </div>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                      <input type="text" id="ctl00_lvStops_ctrl0_txtStopAddress2" class="form-control" placeholder="Address 2">
+                    </div>
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <input type="text" id="ctl00_lvStops_ctrl0_txtStopCity" class="form-control NewLoadStopCity" placeholder="City">
+                          <span id="ctl00_lvStops_ctrl0_spnRStopCity" class="required"></span>
+                        </div>
+                        <div class="col-sm-3">
+                          <input type="text" id="ctl00_lvStops_ctrl0_txtStopState" class="form-control NewLoadStopState" placeholder="State">
+                          <span id="ctl00_lvStops_ctrl0_spnRStopState" class="required"></span>
+                        </div>
+                        <div class="col-sm-3">
+                          <input type="text" id="ctl00_lvStops_ctrl0_txtStopZip" class="form-control NewLoadStopZip" placeholder="Zip">
+                          <span id="ctl00_lvStops_ctrl0_spnRStopZip" class="required"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-3">
+                      <input type="text" id="ctl00_lvStops_ctrl0_txtStopContactName" class="form-control NewLoadStopContactName" placeholder="Contact Name">
+                    </div>
+                    <div class="col-sm-2">
+                      <input type="tel" id="ctl00_lvStops_ctrl0_txtStopPhone" class="form-control phoneMask" placeholder="Phone">
+                    </div>
+                    <div class="col-sm-1">
+                      <input type="text" id="ctl00_lvStops_ctrl0_txtStopPhoneExt" class="form-control" placeholder="Ext">
+                    </div>
+                    <div class="col-sm-3">
+                      <input type="tel" id="ctl00_lvStops_ctrl0_txtStopCellPhone" class="form-control phoneMask" placeholder="Cell Phone">
+                    </div>
+                    <div class="col-sm-3">
+                      <input type="email" id="ctl00_lvStops_ctrl0_txtStopEmail" class="form-control" placeholder="Email">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-3">
+                      <textarea rows="3" cols="20" id="ctl00_lvStops_ctrl0_txtStopDirections" class="form-control" placeholder="Stop Note (External) (Rate Con)"></textarea>
+                    </div>
+                    <div class="col-sm-3">
+                      <textarea rows="3" cols="20" id="ctl00_lvStops_ctrl0_txtStopNote" class="form-control" placeholder="Stop Note (Internal)"></textarea>
+                    </div>
+                    <div class="col-sm-3">
+                      <textarea rows="3" cols="20" id="ctl00_lvStops_ctrl0_txtStopBOLNote" class="form-control" placeholder="BOL Note"></textarea>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-group row">
+                        <div class="col-sm-4">
+                          <div class="custom-control custom-checkbox">
+                            <input id="ctl00_lvStops_ctrl0_cbPickupInd" type="checkbox" checked="checked" class="custom-control-input">
+                            <label for="ctl00_lvStops_ctrl0_cbPickupInd" class="custom-control-label">Pickup</label>
+                          </div>
+                        </div>
+                        <div class="col-sm-8">
+                          <input type="text" id="ctl00_lvStops_ctrl0_txtStopPickupNumber" class="form-control" placeholder="Pickup Number">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-sm-4">
+                          <div class="custom-control custom-checkbox">
+                            <input id="ctl00_lvStops_ctrl0_cbDeliveryInd" type="checkbox" class="custom-control-input">
+                            <label for="ctl00_lvStops_ctrl0_cbDeliveryInd" class="custom-control-label">Delivery</label>
+                          </div>
+                        </div>
+                        <div class="col-sm-8">
+                          <input type="text" id="ctl00_lvStops_ctrl0_txtStopDeliveryNumber" class="form-control" placeholder="Delivery Number">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                      <select id="ctl00_lvStops_ctrl0_ddlDriverWorkTypeID" class="form-control">
+                        <option selected="selected" value="">Pick Driver Work</option>
+                        <option value="1">No Touch</option>
+                        <option value="2">Driver Unload</option>
+                        <option value="3">Hire Lumper</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                      <input type="text" id="ctl00_lvStops_ctrl0_txtEarlyDate" class="form-control ezdemo-date" placeholder="mm/dd/yyyy"><svg class="ezdemo-cal" viewBox="0 0 15 16"><path fill="#000" d="M3.5 0h1.5v2h5V0h1.5v2H13a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1.5V0zM1.5 6v8c0 .3.2.5.5.5h11c.3 0 .5-.2.5-.5V6h-12z"/></svg>
+                    </div>
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                      <input type="text" id="ctl00_lvStops_ctrl0_txtLateDate" class="form-control ezdemo-date" placeholder="mm/dd/yyyy"><svg class="ezdemo-cal" viewBox="0 0 15 16"><path fill="#000" d="M3.5 0h1.5v2h5V0h1.5v2H13a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1.5V0zM1.5 6v8c0 .3.2.5.5.5h11c.3 0 .5-.2.5-.5V6h-12z"/></svg>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="card">
+                    <div class="card-header">
+                      <span class="h6">Items</span>
+                      <small>
+                        <span class="pl-3">
+                          <a id="ctl00_lvStops_ctrl0_btnAddPickupItem" class="ml-2 btn btn-primary btn-sm">
+                            <i class="pr-2 fa-fw fas fa-box-open" "=""></i>
+                            <span class="pl-1">Add Pickup Item</span>
+                          </a>
+                        </span>
+                      </small>
+                    </div>
+                    <div class="p-3 m-2 DataRow card border-2">
+                      <div class="d-flex flex-nowrap align-items-center">
+                        <div class="pl-0 pr-2 mt-sm-0 d-none">
+                          <span class="text-sm-left">Item #1 -</span>
+                        </div>
+                        <div id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_pnlPickupDelivery" class="pl-2 pr-2 pb-1 mt-sm-0 badge badge-pill badge-primary">Pickup Item</div>
+                        <div class="p-2 mt-sm-0">
+                          <span class="text-sm-left">Product:</span>
+                        </div>
+                        <div class="p-2 mt-sm-0 flex-grow-1">
+                          <input type="text" id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_txtProduct" class="form-control NewLoadStopItemProduct" placeholder="Product">
+                          <span id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_spnRProduct" class="required"></span>
+                        </div>
+                        <div class="p-2 mt-sm-0">
+                          <div class="custom-control custom-checkbox my-auto">
+                            <input id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_cbHazMat" type="checkbox" class="custom-control-input">
+                            <label for="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_cbHazMat" class="custom-control-label">Hazmat</label>
+                          </div>
+                        </div>
+                        <div class="ml-auto p-2 mt-sm-0">
+                          <span class="h-100 d-flex align-content-center ml-2">
+                            <div class="custom-control custom-checkbox my-auto">
+                              <input id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_cbAddItemInd" type="checkbox" class="custom-control-input">
+                              <label for="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_cbAddItemInd" class="custom-control-label">Save Item</label>
+                            </div>
+                          </span>
+                        </div>
+                        <div class="p-2 mt-sm-0 text-right text-ezl">
+                          <a id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_btnRemoveStopItem" class="pl-4">
+                            <i class="fa-fw fas fa-trash-alt"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-sm-12 col-xl-1 mb-3 mt-sm-0">
+                          <div class="xsmall text-red text-truncate">Product Qty</div>
+                          <input type="text" id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_txtProductQuantity" class="form-control integer" placeholder="Qty">
+                        </div>
+                        <div class="col-sm-12 col-xl-2 mb-3 mt-sm-0">
+                          <div class="xsmall">Package Type</div>
+                          <select id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_ddlPackageTypeID" class="form-control">
+                            <option selected="selected" value="">Package Type</option>
+                            <option value="1">Pallet</option>
+                            <option value="2">Rolls</option>
+                            <option value="3">Other</option>
+                            <option value="4">Bundles</option>
+                            <option value="5">Box</option>
+                            <option value="6">Case</option>
+                            <option value="7">Crate</option>
+                            <option value="8">Cartons</option>
+                            <option value="9">Drum</option>
+                            <option value="10">Gaylord</option>
+                            <option value="11">Pails</option>
+                            <option value="12">Pieces</option>
+                            <option value="13">Skid</option>
+                            <option value="14">Tote</option>
+                            <option value="15">Cubes</option>
+                            <option value="16">Bags</option>
+                          </select>
+                        </div>
+                        <div class="col-sm-12 col-xl-2 mb-3 mb-sm-0">
+                          <div class="xsmall text-red">Product Weight</div>
+                          <input type="text" id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_txtProductWeight" class="form-control integer disablecopypaste" placeholder="Weight">
+                        </div>
+                        <div class="col-sm-12 col-xl-3 pr-0 pl-0 mb-sm-0">
+                          <div class="input-group">
+                            <a id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_btnCopyFromCustomerItem" class="d-none"></a>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-xl-2 mb-3 mb-sm-0"></div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-sm-12 col-xl-1 mb-3 mt-sm-0">
+                          <div class="xsmall">Pieces Qty</div>
+                          <input type="text" id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_txt2PiecesQuantity" class="form-control integer" placeholder="Qty">
+                        </div>
+                        <div class="col-sm-12 col-xl-2 mb-3 mt-sm-0">
+                          <div class="xsmall">Pieces Type</div>
+                          <select id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_ddl2PiecesTypeID" class="form-control">
+                            <option selected="selected" value="">-Select Pieces-</option>
+                            <option value="1">Pallet</option>
+                            <option value="2">Rolls</option>
+                            <option value="3">Other</option>
+                            <option value="4">Bundles</option>
+                            <option value="5">Box</option>
+                            <option value="6">Case</option>
+                            <option value="7">Crate</option>
+                            <option value="8">Cartons</option>
+                            <option value="9">Drum</option>
+                            <option value="10">Gaylord</option>
+                            <option value="11">Pails</option>
+                            <option value="12">Pieces</option>
+                            <option value="13">Skid</option>
+                            <option value="14">Tote</option>
+                            <option value="15">Cubes</option>
+                            <option value="16">Bags</option>
+                          </select>
+                        </div>
+                        <div class="col-sm-12 col-xl-2 mb-3 mt-sm-0">
+                          <div class="xsmall">Length</div>
+                          <div class="input-group">
+                            <input type="text" id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_txtTLLengthFt" class="form-control integer mb-1 ezl-input-feet" placeholder="ft">
+                            <input type="text" id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_txtTLLengthIn" class="form-control integer mb-1 ezl-input-inches" maxlenth="3" placeholder="in">
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-xl-2 mb-3 mt-sm-0">
+                          <div class="xsmall">Width</div>
+                          <div class="input-group">
+                            <input type="text" id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_txtTLWidthFt" class="form-control integer mb-1 ezl-input-feet" placeholder="ft">
+                            <input type="text" id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_txtTLWidthIn" class="form-control integer mb-1 ezl-input-inches" maxwidth="3" placeholder="in">
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-xl-2 mb-3 mt-sm-0">
+                          <div class="xsmall">Height</div>
+                          <div class="input-group">
+                            <input type="text" id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_txtTLHeightFt" class="form-control integer mb-1 ezl-input-feet" placeholder="ft">
+                            <input type="text" id="ctl00_lvStops_ctrl0_lvStopItems_ctrl0_txtTLHeightIn" class="form-control integer mb-1 ezl-input-inches" maxheight="3" placeholder="in">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row"></div>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="w-100 d-xl-none mb-4"></div>
+            <div id="ctl00_lvStops_ctrl1_pnlStop" class="load-stop-panel">
+              <div class="card mb-3">
+                <div class="card-header h5">
+                  <div>Destination
+                    <small class="text-ezl">
+                      <span class="ml-2" style="text-align: right">
+                        <a id="ctl00_lvStops_ctrl1_btnClearStop">
+                          <i class="fa-fw fas fa-eraser"></i>
+                        </a>
+                      </span>
+                    </small>
+                  </div>
+                </div>
+                <div class="card-body DataRow NewLoadStopDataRow" data-loadstopsequence="1000">
+                  <div class="form-group row">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <input type="text" id="ctl00_lvStops_ctrl1_txtStopDate" class="form-control ezdemo-date" placeholder="mm/dd/yyyy"><svg class="ezdemo-cal" viewBox="0 0 15 16"><path fill="#000" d="M3.5 0h1.5v2h5V0h1.5v2H13a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1.5V0zM1.5 6v8c0 .3.2.5.5.5h11c.3 0 .5-.2.5-.5V6h-12z"/></svg>
+                          <span id="ctl00_lvStops_ctrl1_spnRStopDate" class="required"></span>
+                        </div>
+                        <div class="col-sm-4">
+                          <input type="text" id="ctl00_lvStops_ctrl1_txtEarlyTime" class="form-control NewLoadEarlyTime ui-timepicker-input" placeholder="Early Time">
+                        </div>
+                        <div class="col-sm-4">
+                          <input type="text" id="ctl00_lvStops_ctrl1_txtLateTime" class="form-control NewLoadLateTime ui-timepicker-input" placeholder="Late Time">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                      <input type="text" id="ctl00_lvStops_ctrl1_txtStopName" class="form-control NewLoadStopName" placeholder="Name">
+                      <span id="ctl00_lvStops_ctrl1_spnRStopName" class="required"></span>
+                    </div>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                      <div class="row">
+                        <div class="col-sm-6 mb-3 mb-sm-0" style="padding-right: 0px">
+                          <span class="h-100 d-flex align-content-center">
+                            <div class="custom-control custom-checkbox my-auto">
+                              <input id="ctl00_lvStops_ctrl1_cbAddLocationInd" type="checkbox" class="custom-control-input">
+                              <label for="ctl00_lvStops_ctrl1_cbAddLocationInd" class="custom-control-label">Save Location</label>
+                            </div>
+                          </span>
+                        </div>
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                          <select id="ctl00_lvStops_ctrl1_ddlStopCountry" class="form-control NewLoadStopCountry">
+                            <option value="">Pick Country</option>
+                            <option selected value="US">US - United States of America</option>
+                            <option value="CA">CA - Canada</option>
+                            <option value="MX">MX - Mexico</option>
+                            <option value="ZZ">ZZ - International</option>
+                          </select>
+                          <span id="ctl00_lvStops_ctrl1_Span4" class="required"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                      <input type="text" id="ctl00_lvStops_ctrl1_txtStopAddress1" class="form-control NewLoadStopAddress1 pac-target-input" placeholder="Address 1">
+                    </div>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                      <input type="text" id="ctl00_lvStops_ctrl1_txtStopAddress2" class="form-control" placeholder="Address 2">
+                    </div>
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <input type="text" id="ctl00_lvStops_ctrl1_txtStopCity" class="form-control NewLoadStopCity" placeholder="City">
+                          <span id="ctl00_lvStops_ctrl1_spnRStopCity" class="required"></span>
+                        </div>
+                        <div class="col-sm-3">
+                          <input type="text" id="ctl00_lvStops_ctrl1_txtStopState" class="form-control NewLoadStopState" placeholder="State">
+                          <span id="ctl00_lvStops_ctrl1_spnRStopState" class="required"></span>
+                        </div>
+                        <div class="col-sm-3">
+                          <input type="text" id="ctl00_lvStops_ctrl1_txtStopZip" class="form-control NewLoadStopZip" placeholder="Zip">
+                          <span id="ctl00_lvStops_ctrl1_spnRStopZip" class="required"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-3">
+                      <input type="text" id="ctl00_lvStops_ctrl1_txtStopContactName" class="form-control NewLoadStopContactName" placeholder="Contact Name">
+                    </div>
+                    <div class="col-sm-2">
+                      <input type="tel" id="ctl00_lvStops_ctrl1_txtStopPhone" class="form-control phoneMask" placeholder="Phone">
+                    </div>
+                    <div class="col-sm-1">
+                      <input type="text" id="ctl00_lvStops_ctrl1_txtStopPhoneExt" class="form-control" placeholder="Ext">
+                    </div>
+                    <div class="col-sm-3">
+                      <input type="tel" id="ctl00_lvStops_ctrl1_txtStopCellPhone" class="form-control phoneMask" placeholder="Cell Phone">
+                    </div>
+                    <div class="col-sm-3">
+                      <input type="email" id="ctl00_lvStops_ctrl1_txtStopEmail" class="form-control" placeholder="Email">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-3">
+                      <textarea rows="3" cols="20" id="ctl00_lvStops_ctrl1_txtStopDirections" class="form-control" placeholder="Stop Note (External) (Rate Con)"></textarea>
+                    </div>
+                    <div class="col-sm-3">
+                      <textarea rows="3" cols="20" id="ctl00_lvStops_ctrl1_txtStopNote" class="form-control" placeholder="Stop Note (Internal)"></textarea>
+                    </div>
+                    <div class="col-sm-3">
+                      <textarea rows="3" cols="20" id="ctl00_lvStops_ctrl1_txtStopBOLNote" class="form-control" placeholder="BOL Note"></textarea>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-group row">
+                        <div class="col-sm-4">
+                          <div class="custom-control custom-checkbox">
+                            <input id="ctl00_lvStops_ctrl1_cbPickupInd" type="checkbox" class="custom-control-input">
+                            <label for="ctl00_lvStops_ctrl1_cbPickupInd" class="custom-control-label">Pickup</label>
+                          </div>
+                        </div>
+                        <div class="col-sm-8">
+                          <input type="text" id="ctl00_lvStops_ctrl1_txtStopPickupNumber" class="form-control" placeholder="Pickup Number">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-sm-4">
+                          <div class="custom-control custom-checkbox">
+                            <input id="ctl00_lvStops_ctrl1_cbDeliveryInd" type="checkbox" checked="checked" class="custom-control-input">
+                            <label for="ctl00_lvStops_ctrl1_cbDeliveryInd" class="custom-control-label">Delivery</label>
+                          </div>
+                        </div>
+                        <div class="col-sm-8">
+                          <input type="text" id="ctl00_lvStops_ctrl1_txtStopDeliveryNumber" class="form-control" placeholder="Delivery Number">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                      <select id="ctl00_lvStops_ctrl1_ddlDriverWorkTypeID" class="form-control">
+                        <option selected="selected" value="">Pick Driver Work</option>
+                        <option value="1">No Touch</option>
+                        <option value="2">Driver Unload</option>
+                        <option value="3">Hire Lumper</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                      <input type="text" id="ctl00_lvStops_ctrl1_txtEarlyDate" class="form-control ezdemo-date" placeholder="mm/dd/yyyy"><svg class="ezdemo-cal" viewBox="0 0 15 16"><path fill="#000" d="M3.5 0h1.5v2h5V0h1.5v2H13a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1.5V0zM1.5 6v8c0 .3.2.5.5.5h11c.3 0 .5-.2.5-.5V6h-12z"/></svg>
+                    </div>
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                      <input type="text" id="ctl00_lvStops_ctrl1_txtLateDate" class="form-control ezdemo-date" placeholder="mm/dd/yyyy"><svg class="ezdemo-cal" viewBox="0 0 15 16"><path fill="#000" d="M3.5 0h1.5v2h5V0h1.5v2H13a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1.5V0zM1.5 6v8c0 .3.2.5.5.5h11c.3 0 .5-.2.5-.5V6h-12z"/></svg>
+                    </div>
+                  </div>
+                  <br>
+                </div>
+              </div>
+            </div>
+            <div class="w-100 d-xl-none mb-4"></div>
+            <div class="row">
+              <div class="col"></div>
+            </div>
+            <div class="row">
+              <div class="col text-right">
+                <input type="submit" value="Previous" id="btnPrevious5" class="btn btn-secondary">
+                <input type="submit" value="Next" id="btnNextSelectStopItems" class="btn btn-primary">
+                <input type="submit" value="Cancel" id="btnCancel6" class="btn btn-danger">
+              </div>
+            </div>
+          </div>
+                <div id="pnlCarrier" hidden>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="mb-2">Post Load</h5>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col">
+                    <div class="form-check form-check-inline flex-wrap">
+                      <div class="custom-control custom-checkbox mr-4">
+                        <span>
+                          <input id="cbTruckerTools" type="checkbox" class="custom-control-input">
+                          <label for="cbTruckerTools" class="custom-control-label">Trucker Tools</label>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <h5 class="mb-2">Loadboard overrides</h5>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-6 col-lg-3">
+                    <div class="xsmall">Loadboard Length</div>
+                    <div class="input-group">
+                      <input type="text" id="txtLoadboardLengthFt" class="form-control integer mb-1 ezl-input-feet" placeholder="ft">
+                      <input type="text" id="txtLoadboardLengthIn" class="form-control integer mb-1 ezl-input-inches" placeholder="in">
+                    </div>
+                  </div>
+                  <div class="col-sm-6 col-lg-3">
+                    <div class="xsmall">Loadboard Width</div>
+                    <div class="input-group">
+                      <input type="text" id="txtLoadboardWidthFt" class="form-control integer mb-1 ezl-input-feet" placeholder="ft">
+                      <input type="text" id="txtLoadboardWidthIn" class="form-control integer mb-1 ezl-input-inches" placeholder="in">
+                    </div>
+                  </div>
+                  <div class="col-sm-6 col-lg-3">
+                    <div class="xsmall">Loadboard Height</div>
+                    <div class="input-group">
+                      <input type="text" id="txtLoadboardHeightFt" class="form-control integer mb-1 ezl-input-feet" placeholder="ft">
+                      <input type="text" id="txtLoadboardHeightIn" class="form-control integer mb-1 ezl-input-inches" placeholder="in">
+                    </div>
+                  </div>
+                  <div class="col-sm-6 col-lg-3">
+                    <div class="xsmall">Loadboard Weight</div>
+                    <div class="input-group">
+                      <input type="text" id="txtLoadboardWeight" class="form-control integer mb-1" placeholder="lbs">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="mb-2">Freight Charge Terms</h5>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col">
+                    <div class="form-check form-check-inline flex-wrap">
+                      <div class="custom-control custom-checkbox mr-4">
+                        <span>
+                          <input id="cbCarrierFreightTermsPrepaid" type="checkbox" class="custom-control-input">
+                          <label for="cbCarrierFreightTermsPrepaid" class="custom-control-label">Prepaid</label>
+                        </span>
+                      </div>
+                      <div class="custom-control custom-checkbox mr-4">
+                        <span>
+                          <input id="cbCarrierFreightTermsCollect" type="checkbox" class="custom-control-input">
+                          <label for="cbCarrierFreightTermsCollect" class="custom-control-label">Collect</label>
+                        </span>
+                      </div>
+                      <div class="custom-control custom-checkbox mr-4">
+                        <span>
+                          <input id="cbCarrierFreightTerms3rdParty" type="checkbox" checked="checked" class="custom-control-input">
+                          <label for="cbCarrierFreightTerms3rdParty" class="custom-control-label">3rd Party</label>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-lg-6">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="mb-2 d-inline-block">Assign a Carrier</h5>
+                    <div class="custom-control custom-checkbox d-inline-block ml-3">
+                      <input id="cbMultiCarrier" type="checkbox" class="custom-control-input">
+                      <label for="cbMultiCarrier" class="custom-control-label">Multi Carrier</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <input type="text" id="txtCarrierName" class="form-control" placeholder="Carrier Name">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 col-xl-4">
+                    <input type="text" id="txtDispatcherCarrierContactName" class="form-control" placeholder="Dispatcher Name">
+                  </div>
+                  <div class="col-sm-12 col-xl-4">
+                    <input type="text" id="txtDispatcherCarrierContactPhone" class="form-control phoneMask" placeholder="Dispatcher Phone">
+                  </div>
+                  <div class="col-sm-12 col-xl-4">
+                    <input type="text" id="txtDispatcherCarrierContactEmail" class="form-control" placeholder="Dispatcher Email">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 col-xl-4">
+                    <input type="text" id="txtDriverCarrierContactName" class="form-control" placeholder="Driver Name">
+                  </div>
+                  <div class="col-sm-12 col-xl-4">
+                    <input type="text" id="txtDriverCarrierContactCellPhone" class="form-control phoneMask" placeholder="Driver Cell">
+                  </div>
+                  <div class="col-sm-12 col-xl-4">
+                    <input type="text" id="txtDriverCarrierContactEmail" class="form-control" placeholder="Driver Email">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 col-xl-4">
+                    <input type="text" id="txtTruckNumber" class="form-control" placeholder="Truck #">
+                  </div>
+                  <div class="col-sm-12 col-xl-4">
+                    <input type="text" id="txtTrailerNumber" class="form-control" placeholder="Trailer #">
+                  </div>
+                  <div class="col-sm-12 col-xl-4">
+                    <select id="ddlTrailerSizeId" class="form-control" placeholder="Trailer Size">
+                      <option selected value="">Trailer Size</option>
+                      <option value="1">20'</option>
+                      <option value="11">26'</option>
+                      <option value="2">40'</option>
+                      <option value="3">42'</option>
+                      <option value="4">43'</option>
+                      <option value="5">44'</option>
+                      <option value="6">45'</option>
+                      <option value="7">46'</option>
+                      <option value="8">47'</option>
+                      <option value="9">48'</option>
+                      <option value="10">53'</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 col-xl-4">
+                    <input type="text" id="txtVINNumber" class="form-control" placeholder="VIN #">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 col-xl-4">
+                    <input type="text" id="txtOriginETA" class="form-control ui-timepicker-input" placeholder="Origin ETA">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 col-xl-6">
+                    <textarea rows="5" cols="20" id="txtLoadNote" class="form-control" placeholder="Loadboard Note"></textarea>
+                  </div>
+                  <div class="col-sm-12 col-xl-6">
+                    <textarea rows="5" cols="20" id="txtUserNote" class="form-control" placeholder="User Note"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-lg-6">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="mb-2">Due - Carrier</h5>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 mb-3 mb-sm-0">
+                    <input type="text" id="txtCarrierFlatRate" class="form-control numeric" placeholder="Flat Rate">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                    <select id="ddlCarrierUOMId" class="form-control">
+                      <option value="">Unit</option>
+                      <option value="15"></option>
+                      <option selected="selected" value="16"></option>
+                      <option value="1"></option>
+                      <option value="2">Bag</option>
+                      <option value="3">CWT</option>
+                      <option value="4">Flat</option>
+                      <option value="13">Hours</option>
+                      <option value="5">LBS</option>
+                      <option value="6">Miles</option>
+                      <option value="7">Pallet</option>
+                      <option value="8">Roll</option>
+                      <option value="9">Skid</option>
+                      <option value="14">This is a Unit of Measure Test</option>
+                      <option value="10">Tons</option>
+                      <option value="11">TTT</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="text" id="txtCarrierQuantity" class="form-control numeric" placeholder="Qty">
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="text" id="txtCarrierRatePerUnit" class="form-control numeric" placeholder="Unit Rate">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-9 mb-3 mb-sm-0">
+                    <input type="text" id="txtCarrierOtherCostsDescription1" class="form-control" placeholder="Other Cost 1">
+                  </div>
+                  <div class="col-sm-3">
+                    <input type="text" id="txtCarrierOtherCostsGrossCharges1" class="form-control numeric" placeholder="Cost">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-9 mb-3 mb-sm-0">
+                    <input type="text" id="txtCarrierOtherCostsDescription2" class="form-control" placeholder="Other Cost 2">
+                  </div>
+                  <div class="col-sm-3">
+                    <input type="text" id="txtCarrierOtherCostsGrossCharges2" class="form-control numeric" placeholder="Cost">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-9 mb-3 mb-sm-0">
+                    <input type="text" id="txtCarrierOtherCostsDescription3" class="form-control" placeholder="Other Cost 3">
+                  </div>
+                  <div class="col-sm-3">
+                    <input type="text" id="txtCarrierOtherCostsGrossCharges3" class="form-control numeric" placeholder="Cost">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <input type="text" id="txtCarrierTargetRate" class="form-control numeric" placeholder="Target Rate">
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="text" id="txtCarrierMaxBuy" class="form-control numeric" placeholder="Max Buy">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-9">
+                    <select id="ddlCarrierPricingTypeID" class="form-control">
+                      <option selected value="">Pricing</option>
+                      <option value="1">Contract</option>
+                      <option value="2">Spot Market</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-12 col-md-4 col-xxl-2">
+                <div class="d-flex">
+                  <label>Internal:</label>
+                  <span id="spnInternalOpenTab" class="d-none">
+                    <a id="hlLoadCarrierAssignedEditCarrierMonitoringOpenTabCarrier" class="anchor">Carrier Profile
+                      <i class="ml-1 fa-fw fas fa-external-link-alt"></i>
+                    </a>
+                  </span>
+                </div>
+              </div>
+              <div class="col-12 col-md-8 col-xxl-4">
+                <div class="d-flex">
+                  <label>Risk Assessment:</label>
+                  <input type="text" id="txtCarrierMonitoringRiskAssessmentLevelDescription" class="w-100 textbox-as-label" readonly="true">
+                </div>
+              </div>
+              <div class="col-12 col-md-4 col-xxl-2">
+                <div class="d-flex">
+                  <label>External:</label>
+                  <span id="spnExternalOpenTab" class="d-none">
+                    <a id="hlLoadCarrierAssignedEditCarrierMonitoringSource" class="anchor">Carrier Profile
+                      <i class="ml-1 fa-fw fas fa-external-link-alt"></i>
+                    </a>
+                  </span>
+                </div>
+              </div>
+              <div class="col-12 col-md-8 col-xxl-4">
+                <div class="d-flex">
+                  <label>Last Sync:</label>
+                  <input type="text" id="txtCarrierMonitoringLastSyncDateTimeDisplay" class="w-100 textbox-as-label" readonly="true">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col"></div>
+            </div>
+            <div class="row">
+              <div class="col text-danger" id="divCreateLoadMsg"></div>
+            </div>
+            <div class="row">
+              <div class="col text-right">
+                <input type="submit" value="Previous" id="btnPrevious3" class="btn btn-secondary">
+                <input type="submit" value="Create &amp; Send Rate Confirmation" id="btnNextCreateLoadEmail" class="btn btn-success">
+                <input type="submit" value="Create" id="btnNextCreateLoad" class="btn btn-primary">
+                <input type="submit" value="Cancel" id="btnCancel4" class="btn btn-danger">
+              </div>
+            </div>
+          </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="PleaseWait" class="PleaseWaitOff"></div>
+  <div id="PleaseWaitMsg" class="PleaseWaitMsgOff">
+    <div class="modal d-block" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <p>Please Wait</p>
+            <div class="progress">
+              <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script src="kit/demo-kit.js"></script>
+<script src="kit/myloads.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const wizard = $('ucCreateLoad');
+  const october = new Date(2026, 9, 1);
+  const panels = ['pnlSelectCustomer', 'pnlLoadDetails', 'pnlStopItems', 'pnlCarrier'];
+  const showPanel = id => panels.forEach(p => { $(p).hidden = p !== id; });
+  const optionValue = (sel, text) => [...sel.options].find(o => o.text.trim() === text).value;
+  const stop = (i, field) => $(`ctl00_lvStops_ctrl${i}_${field}`);
+  const item = field => $(`ctl00_lvStops_ctrl0_lvStopItems_ctrl0_${field}`);
+  EZMyLoads.render($('myLoadsRows'), EZMyLoads.SAMPLE);
+
+  // One zip pick fills City, State and Zip, as in the real app
+  async function pickZip(k, i, prefix, city, state, zips, pick) {
+    await k.autocomplete(stop(i, 'txtStopZip'), prefix, zips.map(z => `${z} [${city}, ${state}]`), pick);
+    stop(i, 'txtStopZip').value = zips[pick];
+    stop(i, 'txtStopCity').value = city;
+    stop(i, 'txtStopState').value = state;
+    await k.sleep(400);
+  }
+
+  EZDemo.start({
+    reset() {
+      wizard.querySelectorAll('input[type=text], input[type=tel], input[type=email], textarea').forEach(i => {
+        if (!['txtSalesRepName', 'txtSalesRepCommission'].includes(i.id)) i.value = '';
+      });
+      $('txtSalesRepName').value = 'Alex Turner';
+      $('txtSalesRepCommission').value = '100';
+      $('ddlEquipmentTypeId').value = '';
+      $('ddlCarrierPricingTypeID').value = '';
+      item('ddlPackageTypeID').selectedIndex = 0;
+      $('btnNextSelectCustomer').disabled = true;
+      $('nlTitle').textContent = 'New Load ';
+      $('pnlLoadCapacityIndicator').hidden = true;
+      showPanel('pnlSelectCustomer');
+    },
+
+    async run(k) {
+      const top = { x: innerWidth / 2, y: 330 };
+      await k.sleep(1000);
+
+      // "+ Add New" > New Load
+      const addNew = $('btnAddNewItemDdl');
+      k.cam(1.35, k.centerOf(addNew, -220, 120));
+      await k.press(addNew);
+      $('addNewMenu').classList.add('show');
+      await k.sleep(450);
+      await k.press($('hlNewLoad'), { hold: 300 });
+      $('addNewMenu').classList.remove('show');
+      k.cam(1, k.full());
+      k.screen('newload');
+      await k.sleep(450);
+      k.showModal(wizard);
+      await k.sleep(800);
+
+      // Pick the customer
+      k.cam(1.25, { x: innerWidth / 2, y: 200 });
+      await k.autocomplete($('txtNewLoadCustomerName'), 'south', [
+        'Southern Paper Co. [Chattanooga, TN 37402]', 'Southern States Packaging [Atlanta, GA 30318]',
+        'Southside Lumber [Macon, GA 31201]', 'Southwind Foods [Birmingham, AL 35203]'], 0);
+      $('txtNewLoadCustomerName').value = 'Southern Paper Co. [Chattanooga, TN  37402]';
+      $('btnNextSelectCustomer').disabled = false;
+      await k.sleep(450);
+      await k.press($('btnNextSelectCustomer'));
+      $('nlTitle').textContent = 'New Load for Southern Paper Co. [Chattanooga, TN 37402]';
+      $('pnlLoadCapacityIndicator').hidden = false;
+      showPanel('pnlLoadDetails');
+      k.focusField(null);
+
+      // Step 1: load details and customer rate (the customer's credit position is right there)
+      k.cam(1.15, top);
+      await k.sleep(1200);
+      await k.fillText($('txtPoNumber'), 'PO-44817', 13);
+      await k.chooseSelect($('ddlEquipmentTypeId'), '25');
+      await k.fillText($('txtCustomerFlatRate'), '2450', 11);
+      k.focusField(null);
+      await k.press($('btnNextDetails'));
+      showPanel('pnlStopItems');
+      wizard.scrollTop = 0;
+
+      // Step 2: stops. Date from the calendar, one zip lookup per stop
+      await k.sleep(700);
+      await k.pickDate(stop(0, 'txtStopDate'), october, 29);
+      await k.fillText(stop(0, 'txtStopName'), 'Southern Paper Mill', 18);
+      await pickZip(k, 0, '3740', 'CHATTANOOGA', 'TN', ['37401', '37402', '37403', '37404', '37405', '37406', '37407', '37408', '37409'], 1);
+      k.focusField(null);
+      await k.scrollElement(wizard, item('txtProduct').getBoundingClientRect().top + wizard.scrollTop - 260, 900);
+      await k.fillText(item('txtProduct'), 'Paper Goods', 16);
+      await k.chooseSelect(item('ddlPackageTypeID'), optionValue(item('ddlPackageTypeID'), 'Pallet'));
+      await k.fillText(item('txtProductWeight'), '42000', 12);
+      k.focusField(null);
+      await k.scrollElement(wizard, stop(1, 'txtStopDate').getBoundingClientRect().top + wizard.scrollTop - 230, 900);
+      await k.pickDate(stop(1, 'txtStopDate'), october, 30);
+      await k.fillText(stop(1, 'txtStopName'), 'Coastal Distribution', 18);
+      await pickZip(k, 1, '3140', 'SAVANNAH', 'GA', ['31401', '31402', '31403', '31404', '31405', '31406', '31407', '31408', '31409'], 0);
+      k.focusField(null);
+      await k.scrollElement(wizard, wizard.scrollHeight - wizard.clientHeight, 700);
+      await k.press($('btnNextSelectStopItems'));
+      showPanel('pnlCarrier');
+      wizard.scrollTop = 0;
+
+      // Step 3: carrier. Approved carriers show in green, others in red
+      await k.sleep(800);
+      await k.autocomplete($('txtCarrierName'), 'blue', [
+        { text: 'BLUE LINE FREIGHT INC[ATLANTA,GA 30336] MC#552190', cls: 'text-danger' },
+        { text: 'BLUE RIDGE TRANSPORT LLC[KNOXVILLE,TN 37919] MC#784512', cls: 'text-success' },
+        { text: 'BLUEGRASS HAULING[LEXINGTON,KY 40511] MC#690245', cls: 'text-success' },
+        { text: 'BLUEWATER LOGISTICS[MOBILE,AL 36602] MC#601877', cls: 'text-danger' }], 1, { cps: 9 });
+      $('txtCarrierName').value = 'BLUE RIDGE TRANSPORT LLC[KNOXVILLE,TN 37919] MC#784512';
+      await k.sleep(400);
+      await k.fillText($('txtCarrierFlatRate'), '1925', 11);
+      k.focusField(null);
+      await k.scrollElement(wizard, wizard.scrollHeight - wizard.clientHeight, 700);
+
+      // Create: "Please Wait", then the new load opens with profit already worked out
+      await k.press($('btnNextCreateLoad'), { hold: 350 });
+      k.cam(1, k.full());
+      k.pleaseWait(true);
+      await k.sleep(1300);
+      k.hideModal(wizard);
+      k.screen('load');
+      k.pleaseWait(false);
+      k.setCursor('arrow');
+      await k.sleep(1400);
+      const acct = $('loadAccounting');
+      k.cam(1.3, k.centerOf(acct, 0, -30));
+      await k.moveTo(k.centerOf(acct.querySelector('.green-number'), 30, 28), { mode: 'arrow', dur: 1100 });
+      await k.sleep(2800);
+      k.cam(1, k.full());
+      await k.sleep(1800);
+    },
+  });
+})();
+
+</script>
+</body>
+</html>
