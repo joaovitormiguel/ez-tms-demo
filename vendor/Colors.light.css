@@ -1,0 +1,27 @@
+﻿
+/* DARK MODE - START */
+html[data-theme="dark"] { /*dark*/ 
+
+	.bg-ezl-row-alt {
+		background-color: rgba(60, 70, 128, 0.3);
+		border-bottom-color: rgb(128, 128, 128) !important; 
+		border-bottom-width: 1px !important;
+		box-sizing: border-box;
+	}
+
+	.text-ezl {
+		/* color: #D76B39 !important; */
+		color: cornflowerblue !important;
+	}
+
+.text-green {
+	color: #00cc00 !important;
+}
+
+	.text-red {
+		color: red !important;
+		font-weight: 600;
+	}
+}
+
+/* DARK MODE - END */

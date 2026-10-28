@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>EZ TMS Loadboard Demo</title>
+<link rel="icon" type="image/png" href="vendor/img/favicon-32x32.png">
+<!-- Same stylesheets, versions and order as demo.ezloader.app (captured 28 Oct 2026) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="vendor/jquery-ui.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+<!-- The app uses Font Awesome Pro (licensed to EZ TMS). Published copies load the free set, with the
+     closest free icon wherever the app uses a Pro-only one. Local copies with the gitignored
+     vendor/fontawesome-pro folder switch back to the exact Pro icons (used for video renders). -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+<script>
+  window.__ezUsePro = function () {
+    document.documentElement.classList.add('ezdemo-fa-pro');
+    const swap = () => document.querySelectorAll('[data-fa-pro]').forEach(i => {
+      i.classList.remove(i.dataset.faFree);
+      i.classList.add(i.dataset.faPro);
+    });
+    document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', swap) : swap();
+  };
+</script>
+<link rel="stylesheet" href="vendor/fontawesome-pro/css/all.css" onload="window.__ezUsePro && window.__ezUsePro()">
+<link rel="stylesheet" href="vendor/Site.css">
+<link rel="stylesheet" href="vendor/Bootstrap-Overrides.css">
+<link rel="stylesheet" href="vendor/Colors.css">
+<link rel="stylesheet" href="vendor/Colors.light.css">
+<link rel="stylesheet" href="vendor/jquery.timepicker.min.css">
+<style>
+  /* Copied from the app page's inline <style> block */
+  #pageHeader:not(.sticky-top) { z-index: 1030; }
+  .no-focus-border:focus { outline: none; border-color: transparent; box-shadow: none; }
+  .input_group_border { border: 1px solid var(--secondary); border-radius: 0.25rem; }
+  /* From the app's Syncfusion stylesheet (ej.web.all.min.css), the only rule this screen uses */
+  .e-ejinputtext { font-family: "Segoe UI", "Helvetica Neue", Ubuntu, Arial; padding-right: 4px; }
+</style>
+<style>
+  /* ---- Demo-only layer: nothing below is part of the EZ TMS UI ---- */
+  html, body { overflow: hidden; }
+
+  /* Chrome renders <input type="date"> in the viewer's locale; fake it so videos always show US mm/dd/yyyy */
+  .ezdemo-date::placeholder { color: #495057; opacity: 1; }
+  .ezdemo-cal { position: absolute; right: 27px; top: 11px; width: 15px; height: 16px; pointer-events: none; }
+
+  /* Hover/focus states the fake cursor can't trigger natively (values copied from Bootstrap 4.4.1) */
+  .btn-primary.is-hover { background-color: #0069d9; border-color: #0062cc; }
+  .form-control.is-focus { color: #495057; background-color: #fff; border-color: #80bdff; outline: 0; box-shadow: 0 0 0 .2rem rgba(0,123,255,.25); }
+
+  #ezdemoCursor { position: fixed; left: 0; top: 0; z-index: 100000; pointer-events: none; will-change: transform; }
+  #ezdemoCursor > * { position: absolute; left: 0; top: 0; display: none; }
+  #ezdemoCursor[data-mode="arrow"] .c-arrow,
+  #ezdemoCursor[data-mode="text"] .c-text,
+  #ezdemoCursor[data-mode="pointer"] .c-pointer { display: block; }
+  #ezdemoCursor .c-arrow { transform: translate(-5px, -3px); }
+  #ezdemoCursor .c-text { transform: translate(-12px, -12px); }
+  #ezdemoCursor .c-pointer { transform: translate(-7px, -1px); font-size: 21px; line-height: 1; }
+  #ezdemoCursor .c-pointer i { position: absolute; left: 0; top: 0; }
+  #ezdemoCursor.press { transition: none; }
+  #ezdemoCursor.press > * { scale: .88; }
+  .ezdemo-render input, .ezdemo-render textarea { caret-color: transparent !important; }
+  #ezdemoCaret { position: fixed; display: none; width: 1px; background: #495057; z-index: 99998; pointer-events: none; }
+  .ezdemo-ring { position: fixed; z-index: 99999; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%;
+    border: 2px solid rgba(0,123,255,.6); pointer-events: none; animation: ezdemoRing .45s ease-out forwards; }
+  @keyframes ezdemoRing { from { transform: scale(.3); opacity: 1; } to { transform: scale(1.35); opacity: 0; } }
+</style>
+</head>
+<body>
+
+<form id="PageForm" onsubmit="return false">
+  <div class="wrapper">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <nav id="sidebar" class="collapse show mCustomScrollbar mCS-autoHide mCS_no_scrollbar" style="overflow: visible;">
+      <div class="mCustomScrollBox mCS-minimal mCSB_vertical mCSB_outside" style="max-height: none;">
+        <div class="mCSB_container mCS_y_hidden mCS_no_scrollbar_y" style="position:relative; top:0; left:0;" dir="ltr">
+          <div class="sidebar-header">
+            <div class="sidebar-logo">
+              <img src="vendor/img/favicon-32x32.png" class="sidebar-item" alt="">
+            </div>
+          </div>
+          <div class="sidebar-menu-divider mt-0"></div>
+          <ul class="list-unstyled components" style="margin-left: 0px; margin-right:0px; padding-left:1px; padding-right:1px;">
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-tachometer-alt fa-fw"></i><span class="sidebar-item-text">Dashboards</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-truck-loading fa-fw"></i><span class="sidebar-item-text">Loads</span></a></li>
+            <li class="sidebar-item"><a class="ezl-menu-item"><i class="sidebar-item-icon fas fa-user-alt fa-fw"></i><span class="sidebar-item-text">Customers</span></a></li>
+            <li class="sidebar-item"><a class="ezl-menu-item"><i class="sidebar-item-icon fas fa-truck fa-fw"></i><span class="sidebar-item-text">Carriers</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-donate fa-fw" data-fa-free="fa-donate" data-fa-pro="fa-badge-dollar"></i><span class="sidebar-item-text">Sales</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-pallet fa-fw" data-fa-free="fa-pallet" data-fa-pro="fa-pallet-alt"></i><span class="sidebar-item-text">LTL</span></a></li>
+            <li class="sidebar-item"><a><i class="sidebar-item-dropdown"></i><i class="sidebar-item-icon fas fa-calculator fa-fw" data-fa-free="fa-calculator" data-fa-pro="fa-abacus"></i><span class="sidebar-item-text">Accounting</span></a></li>
+            <li class="sidebar-item"><a class="ezl-menu-item"><i class="sidebar-item-icon fas fa-file-alt fa-fw"></i><span class="sidebar-item-text">Reports</span></a></li>
+            <li class="sidebar-item" style="color: orange; font-size: 0.8rem;">
+              <div class="sidebar-menu-divider"></div>
+              <a class="sidebar-menu-help btn text-left"><i class="sidebar-item-icon far fa-question-circle"></i><span class="sidebar-item-text">Need Help? Click Here</span></a>
+            </li>
+            <li class="sidebar-item">
+              <div class="sidebar-menu-divider"></div>
+              <button type="button" class="sidebar-menu-collapse btn text-left">
+                <i class="sidebar-item-icon fas fa-arrow-right d-none"></i>
+                <i class="sidebar-item-icon fas fa-arrow-left"></i>
+                <span class="sidebar-item-text">Collapse Menu</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div id="content">
+      <!-- ===================== HEADER ===================== -->
+      <header id="pageHeader" class="navbar-nav-title navbar navbar-expand flex-column flex-md-row bd-navbar mb-0 shadow">
+        <div class="container-fluid navbar-nav-title">
+          <div class="navbar-nav">
+            <ul class="navbar-nav bd-navbar-nav flex-row">
+              <li><button type="button" id="sidebarCollapse" class="btn btn-primary"><i class="fas fa-align-left"></i></button></li>
+            </ul>
+            <ul id="headerLogo" class="navbar-nav bd-navbar-nav flex-row">
+              <li><div class="nav-item h3 mb-0 ml-2 mr-2"><img class="navbar-header-icon" src="vendor/img/ez-tms-logo.png" alt="EZ TMS" style="border-width:0px;"></div></li>
+            </ul>
+          </div>
+
+          <ul id="pageOptions" class="navbar-nav flex-row ml-md-auto xd-none d-md-flex">
+            <li class="ml-2 mr-2">
+              <div class="input-group ezl-loadsearch flex-nowrap input_group_border">
+                <div class="input-group-prepend">
+                  <button class="btn ezl-loadsearch-icon btn-outline-secondary navbar-search-btn border-0" type="button" disabled>
+                    <i class="fas fa-search" style="font-weight: 400; padding-top:4px"></i>
+                  </button>
+                </div>
+                <input type="text" class="form-control ezl-loadsearch-text e-ejinputtext e-customlocationfilter pl-0 navbar-search-text border-0 no-focus-border ui-autocomplete-input" placeholder="Load # Search..." tabindex="-1">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary navbar-search-btn border-0" type="button" disabled style="background-color: inherit !important; color: var(--secondary) !important; cursor: default;">
+                    <i class="fas fa-times" style="font-weight: 400; display: none;"></i>
+                  </button>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item dropdown text-primary ml-2 mr-2">
+              <button class="btn btn-success text-nowrap mr-2" type="button" style="margin-top: 1px; padding-bottom: 4px;">+ Add New</button>
+            </li>
+            <div id="upNotifications">
+              <div class="ml-2 mr-2">
+                <li class="nav-item" style="cursor: pointer;"><span><i class="fas fa-bell pt-1 fa-1x"></i></span></li>
+              </div>
+            </div>
+            <div id="upAccountingNotifications">
+              <div class="mr-4 ml-2">
+                <li class="nav-item" style="cursor: pointer;">
+                  <span class="ml-3 badge badge-pill bg-ezl-highlight position-absolute">12</span>
+                  <span><i class="fas fa-comment-dollar pt-1 fa-1x" data-fa-free="fa-comment-dollar" data-fa-pro="fa-comment-alt-dollar"></i></span>
+                </li>
+              </div>
+            </div>
+            <li></li>
+            <li id="pageToasterAnchor">&nbsp;</li>
+            <li class="nav-item dropdown pl-1">
+              <div class="rounded-circle text-center portrait-wrapper portrait-wrapper-small"><div class="font-weight-bold">AT</div></div>
+            </li>
+          </ul>
+        </div>
+      </header>
+
+      <!-- ===================== BREADCRUMB ===================== -->
+      <div id="NavAndFilterHeader" class="container-fluid navandfilter-header mt-1 mb-0 sticky-top">
+        <table width="100%" class="navandfilter-table">
+          <tbody><tr>
+            <td class="navandfilter-thin">
+              <div class="form-row">
+                <div class="col-12">
+                  <div class="float-left navandfilter-div-left ml-1">
+                    <div class="thinbreadcrumb">
+                      <span class="text-muted mt-1"><span><a title="Home Page">Home</a></span><span> &gt; </span><span><a>Loads</a></span><span> &gt; </span></span>
+                      <span class="page-title-text">Loadboard</span>
+                    </div>
+                  </div>
+                  <div class="float-right navandfilter-div-right mt-1"></div>
+                </div>
+              </div>
+              <div class="mt-1"><hr></div>
+            </td>
+          </tr></tbody>
+        </table>
+      </div>
+
+      <!-- ===================== LOADBOARD ===================== -->
+      <div id="pageContent" class="container-fluid">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col"><span class="h5">Loads Posted</span></div>
+              <div class="col text-right d-print-none">
+                <a class="pointer"><i class="fas fa-print"></i></a>
+                <a><i class="fa-fw fas fa-redo-alt"></i></a>
+              </div>
+            </div>
+            <div class="table-responsive-xl">
+              <table class="table table-striped table-sm mb-0 sticky-header">
+                <thead class="thead-dark">
+                  <tr>
+                    <th class="d-none d-sm-table-cell"><small><a>Load#</a></small></th>
+                    <th class="d-none d-sm-table-cell"><small><a>Equip.</a></small></th>
+                    <th class="d-none d-sm-table-cell"><small><a>TL/LTL</a></small></th>
+                    <th class="d-none d-lg-table-cell"><small><a>Rate</a></small></th>
+                    <th><small><a>Lane</a></small></th>
+                    <th><small><a>Pickup</a></small></th>
+                    <th><small><a>Dropoff</a></small></th>
+                    <th class="d-none d-lg-table-cell"><small><a>User</a></small></th>
+                    <th><small><a>Status</a></small></th>
+                    <th><small>Boards</small></th>
+                    <th class="text-center">
+                      <a id="btnAddPost" class="btn btn-primary btn-sm mr-1 text-xs"><i class="fa-fw fas fa-plus-square"></i> Add Post</a>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="lbRows">
+                  <tr>
+                    <td class="d-none d-sm-table-cell"><small><span>L-01458</span> <a class="text-ezl LoadSearchExternalLoadLink"><i class="ml-1 fa-fw fas fa-external-link-alt"></i></a></small></td>
+                    <td class="d-none d-sm-table-cell"><small>V</small></td>
+                    <td class="d-none d-sm-table-cell"><small>TL</small></td>
+                    <td class="d-none d-lg-table-cell"><small>$1,850</small></td>
+                    <td><small><div class="text-nowrap d-inline-block mr-2">Nashville, TN</div><i class="mr-2 fas fa-arrow-right"></i><div class="text-nowrap d-inline-block mr-2">Atlanta, GA</div></small></td>
+                    <td><small>10/27/2026</small></td>
+                    <td><small>10/28/2026</small></td>
+                    <td class="d-none d-lg-table-cell"><small>A. TURNER</small></td>
+                    <td><small>Pending</small></td>
+                    <td><img class="list-icon" src="vendor/img/DAT-Icon.png" alt="DAT"></td>
+                    <td class="text-center text-ezl"><a><i class="fa-fw fas fa-edit"></i></a><a><i class="fa-fw fas fa-trash-alt"></i></a></td>
+                  </tr>
+                  <tr>
+                    <td class="d-none d-sm-table-cell"><small><span>L-01461</span> <a class="text-ezl LoadSearchExternalLoadLink"><i class="ml-1 fa-fw fas fa-external-link-alt"></i></a></small></td>
+                    <td class="d-none d-sm-table-cell"><small>R</small></td>
+                    <td class="d-none d-sm-table-cell"><small>TL</small></td>
+                    <td class="d-none d-lg-table-cell"><small>$2,400</small></td>
+                    <td><small><div class="text-nowrap d-inline-block mr-2">Memphis, TN</div><i class="mr-2 fas fa-arrow-right"></i><div class="text-nowrap d-inline-block mr-2">Dallas, TX</div></small></td>
+                    <td><small>10/27/2026</small></td>
+                    <td><small>10/29/2026</small></td>
+                    <td class="d-none d-lg-table-cell"><small>M. REYES</small></td>
+                    <td><small>Pending</small></td>
+                    <td><img class="list-icon mr-1" src="vendor/img/Truckstop-Icon.png" alt="Truckstop"><img class="list-icon" src="vendor/img/DAT-Icon.png" alt="DAT"></td>
+                    <td class="text-center text-ezl"><a><i class="fa-fw fas fa-edit"></i></a><a><i class="fa-fw fas fa-trash-alt"></i></a></td>
+                  </tr>
+                  <tr>
+                    <td class="d-none d-sm-table-cell"><small><span>L-01463</span> <a class="text-ezl LoadSearchExternalLoadLink"><i class="ml-1 fa-fw fas fa-external-link-alt"></i></a></small></td>
+                    <td class="d-none d-sm-table-cell"><small>F</small></td>
+                    <td class="d-none d-sm-table-cell"><small>TL</small></td>
+                    <td class="d-none d-lg-table-cell"><small>$2,150</small></td>
+                    <td><small><div class="text-nowrap d-inline-block mr-2">Louisville, KY</div><i class="mr-2 fas fa-arrow-right"></i><div class="text-nowrap d-inline-block mr-2">Charlotte, NC</div></small></td>
+                    <td><small>10/28/2026</small></td>
+                    <td><small>10/29/2026</small></td>
+                    <td class="d-none d-lg-table-cell"><small>M. REYES</small></td>
+                    <td><small>Pending</small></td>
+                    <td><img class="list-icon" src="vendor/img/DAT-Icon.png" alt="DAT"></td>
+                    <td class="text-center text-ezl"><a><i class="fa-fw fas fa-edit"></i></a><a><i class="fa-fw fas fa-trash-alt"></i></a></td>
+                  </tr>
+                  <tr>
+                    <td class="d-none d-sm-table-cell"><small><span>L-01467</span> <a class="text-ezl LoadSearchExternalLoadLink"><i class="ml-1 fa-fw fas fa-external-link-alt"></i></a></small></td>
+                    <td class="d-none d-sm-table-cell"><small>V</small></td>
+                    <td class="d-none d-sm-table-cell"><small>TL</small></td>
+                    <td class="d-none d-lg-table-cell"><small>$1,675</small></td>
+                    <td><small><div class="text-nowrap d-inline-block mr-2">Knoxville, TN</div><i class="mr-2 fas fa-arrow-right"></i><div class="text-nowrap d-inline-block mr-2">Birmingham, AL</div></small></td>
+                    <td><small>10/28/2026</small></td>
+                    <td><small>10/28/2026</small></td>
+                    <td class="d-none d-lg-table-cell"><small>A. TURNER</small></td>
+                    <td><small>Pending</small></td>
+                    <td><img class="list-icon mr-1" src="vendor/img/Truckstop-Icon.png" alt="Truckstop"></td>
+                    <td class="text-center text-ezl"><a><i class="fa-fw fas fa-edit"></i></a><a><i class="fa-fw fas fa-trash-alt"></i></a></td>
+                  </tr>
+                  <!-- Posts created from the Loadboard have no Load# (matches the real app) -->
+                  <tr id="newRow" class="d-none">
+                    <td class="d-none d-sm-table-cell"><small><span></span></small></td>
+                    <td class="d-none d-sm-table-cell"><small>V</small></td>
+                    <td class="d-none d-sm-table-cell"><small>TL</small></td>
+                    <td class="d-none d-lg-table-cell"><small>$1,925</small></td>
+                    <td><small><div class="text-nowrap d-inline-block mr-2">CHATTANOOGA, TN</div><i class="mr-2 fas fa-arrow-right"></i><div class="text-nowrap d-inline-block mr-2">SAVANNAH, GA</div></small></td>
+                    <td><small>10/29/2026</small></td>
+                    <td><small>10/30/2026</small></td>
+                    <td class="d-none d-lg-table-cell"><small>A. TURNER</small></td>
+                    <td><small>Pending</small></td>
+                    <td><img class="list-icon" src="vendor/img/DAT-Icon.png" alt="DAT"></td>
+                    <td class="text-center text-ezl"><a><i class="fa-fw fas fa-edit"></i></a><a><i class="fa-fw fas fa-trash-alt"></i></a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== NEW LOAD POSTING MODAL ===================== -->
+        <div class="modal fade" id="ModalLoadItemsEdit" role="dialog" aria-modal="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div>
+                <div class="modal-header">
+                  <h5 class="modal-title">New Load Posting</h5>
+                </div>
+                <div class="modal-body">
+                  <div class="modal-body ui-font">
+
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="row"><div class="col">
+                          <h5 class="mb-2">Origin</h5>
+                          <div class="form-group row"><div class="col">
+                            <select id="oCountry" class="form-control NewLoadStopCountry">
+                              <option value="" selected>Pick Country</option>
+                              <option value="US">US - United States of America</option>
+                              <option value="CA">CA - Canada</option>
+                              <option value="MX">MX - Mexico</option>
+                              <option value="ZZ">ZZ - International</option>
+                            </select><span class="required"></span>
+                          </div></div>
+                          <div class="form-group row"><div class="col"><input type="text" class="form-control" placeholder="Name"></div></div>
+                          <div class="form-group row"><div class="col"><input type="text" class="form-control" placeholder="Address 1"></div></div>
+                          <div class="form-group row"><div class="col"><input type="text" class="form-control" placeholder="Address 2"></div></div>
+                          <div class="form-group row"><div class="col">
+                            <input id="oCity" type="text" class="form-control" placeholder="City"><span class="required"></span>
+                          </div></div>
+                          <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0"><input id="oState" type="text" class="form-control text-uppercase" placeholder="State"><span class="required"></span></div>
+                            <div class="col-sm-6"><input id="oZip" type="text" class="form-control" placeholder="Zip"></div>
+                          </div>
+                        </div></div>
+                        <div class="row"><div class="col">
+                          <h5 class="mb-2">Origin Details</h5>
+                          <div class="form-group row"><div class="col-sm-12">
+                            <input id="oDate" type="text" class="form-control ezdemo-date" placeholder="mm/dd/yyyy"><span class="required"></span>
+                            <svg class="ezdemo-cal" viewBox="0 0 15 16"><path fill="#000" d="M3.5 0h1.5v2h5V0h1.5v2H13a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1.5V0zM1.5 6v8c0 .3.2.5.5.5h11c.3 0 .5-.2.5-.5V6h-12z"/></svg>
+                          </div></div>
+                          <div class="form-group row">
+                            <div class="col col-lg-6 mb-3 mb-lg-0"><input id="oFrom" type="text" class="form-control ui-timepicker-input" placeholder="From"></div>
+                            <div class="col col-lg-6"><input id="oTo" type="text" class="form-control ui-timepicker-input" placeholder="To"></div>
+                          </div>
+                        </div></div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="row"><div class="col">
+                          <h5 class="mb-2">Destination</h5>
+                          <div class="form-group row"><div class="col">
+                            <select id="dCountry" class="form-control NewLoadStopCountry">
+                              <option value="" selected>Pick Country</option>
+                              <option value="US">US - United States of America</option>
+                              <option value="CA">CA - Canada</option>
+                              <option value="MX">MX - Mexico</option>
+                              <option value="ZZ">ZZ - International</option>
+                            </select><span class="required"></span>
+                          </div></div>
+                          <div class="form-group row"><div class="col"><input type="text" class="form-control" placeholder="Name"></div></div>
+                          <div class="form-group row"><div class="col"><input type="text" class="form-control" placeholder="Address 1"></div></div>
+                          <div class="form-group row"><div class="col"><input type="text" class="form-control" placeholder="Address 2"></div></div>
+                          <div class="form-group row"><div class="col">
+                            <input id="dCity" type="text" class="form-control" placeholder="City"><span class="required"></span>
+                          </div></div>
+                          <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0"><input id="dState" type="text" class="form-control text-uppercase" placeholder="State"><span class="required"></span></div>
+                            <div class="col-sm-6"><input id="dZip" type="text" class="form-control" placeholder="Zip"></div>
+                          </div>
+                        </div></div>
+                        <div class="row"><div class="col">
+                          <h5 class="mb-2">Destination Details</h5>
+                          <div class="form-group row"><div class="col-sm-12">
+                            <input id="dDate" type="text" class="form-control ezdemo-date" placeholder="mm/dd/yyyy"><span class="required"></span>
+                            <svg class="ezdemo-cal" viewBox="0 0 15 16"><path fill="#000" d="M3.5 0h1.5v2h5V0h1.5v2H13a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1.5V0zM1.5 6v8c0 .3.2.5.5.5h11c.3 0 .5-.2.5-.5V6h-12z"/></svg>
+                          </div></div>
+                          <div class="form-group row">
+                            <div class="col col-lg-6 mb-3 mb-lg-0"><input id="dFrom" type="text" class="form-control ui-timepicker-input" placeholder="From"></div>
+                            <div class="col col-lg-6"><input id="dTo" type="text" class="form-control ui-timepicker-input" placeholder="To"></div>
+                          </div>
+                        </div></div>
+                      </div>
+                    </div>
+
+                    <div class="row"><div class="col">
+                      <h5 class="mb-2">Equipment Type &amp; Requirements</h5>
+                      <div class="form-group row"><div class="col">
+                        <select id="equip" class="form-control">
+                          <option value="" selected>Equipment Type</option>
+                          <option value="4">Flatbed</option>
+                          <option value="17">Reefer</option>
+                          <option value="23">Step Deck</option>
+                          <option value="25">Van</option>
+                          <option value="27">Van Air-Ride</option>
+                        </select>
+                        <span class="requiredddl"></span>
+                      </div></div>
+                    </div></div>
+
+                    <div class="row"><div class="col"><h5 class="mb-2">Accounting</h5></div></div>
+                    <div class="row">
+                      <div class="col-6"><div class="row"><div class="col">
+                        <div class="form-group row"><div class="col">
+                          <input id="rate" type="text" class="form-control numeric" placeholder="$ Carrier Flat Rate">
+                        </div></div>
+                      </div></div></div>
+                    </div>
+
+                    <div class="row"><div class="col">
+                      <h5 class="mb-2">Other Criteria</h5>
+                      <div class="form-group row">
+                        <div class="col-sm-6">
+                          <select id="cap" class="form-control">
+                            <option value="" selected>TL/LTL</option>
+                            <option value="1">Truckload</option>
+                            <option value="2">Less Than Truckload</option>
+                          </select>
+                          <span class="requiredddl"></span>
+                        </div>
+                        <div class="col-sm-6"><input id="miles" type="text" class="form-control integer" placeholder="Miles"></div>
+                      </div>
+
+                      <h5 class="mb-2">First Item</h5>
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <div class="form-group row"><div class="col">
+                            <div class="xsmall  text-red"> Length</div>
+                            <div class="input-group ">
+                              <input id="lenFt" type="text" class="form-control integer mb-1 ezl-input-feet" placeholder="ft"><input type="text" class="form-control integer mb-1 ezl-input-inches" placeholder="in">
+                            </div>
+                          </div></div>
+                          <div class="form-group row"><div class="col">
+                            <div class="xsmall text-red"> Weight</div>
+                            <input id="weight" type="text" class="form-control integer" placeholder="Weight">
+                          </div></div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="form-group row"><div class="col">
+                            <div class="xsmall"> Product</div>
+                            <input id="product" type="text" class="form-control" placeholder="Product">
+                          </div></div>
+                        </div>
+                      </div>
+
+                      <h5 class="mb-2">Loadboard Overrides</h5>
+                      <div class="row mb-3">
+                        <div class="col-sm-6">
+                          <div class="xsmall text-red"> Loadboard Length</div>
+                          <div class="input-group ">
+                            <input id="lbLenFt" type="text" class="form-control integer mb-1 ezl-input-feet" placeholder="ft"><input type="text" class="form-control integer mb-1 ezl-input-inches" placeholder="in">
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="xsmall"> Loadboard Width</div>
+                          <div class="input-group ">
+                            <input type="text" class="form-control integer mb-1 ezl-input-feet" placeholder="ft"><input type="text" class="form-control integer mb-1 ezl-input-inches" placeholder="in">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col-sm-6">
+                          <div class="xsmall"> Loadboard Height</div>
+                          <div class="input-group ">
+                            <input type="text" class="form-control integer mb-1 ezl-input-feet" placeholder="ft"><input type="text" class="form-control integer mb-1 ezl-input-inches" placeholder="in">
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="xsmall"> Loadboard Weight</div>
+                          <div class="input-group ">
+                            <input id="lbWeight" type="text" class="form-control integer mb-1" placeholder="lbs">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row"><div class="col"><h5 class="mb-2">Load Notes</h5></div></div>
+                      <div class="form-group row"><div class="col">
+                        <textarea rows="3" cols="20" class="form-control" placeholder="Load Notes">Alex Turner</textarea>
+                      </div></div>
+                    </div></div>
+
+                    <div class="row">
+                      <div class="col text-right">
+                        <input type="submit" value="Save" id="btnSave" class="btn btn-primary">
+                        <input type="submit" value="Cancel" class="btn btn-secondary">
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="PleaseWait" class="PleaseWaitOff"></div>
+  <div id="PleaseWaitMsg" class="PleaseWaitMsgOff">
+    <div class="modal d-block" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <p>Please Wait</p>
+            <div class="progress">
+              <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- Demo cursor (not part of the product UI) -->
+<div id="ezdemoCursor" data-mode="arrow">
+  <svg class="c-arrow" width="24" height="26" viewBox="0 0 24 26"><path d="M5 3v16.2l4-3.8 2.6 6.1 2.9-1.2-2.6-6h5.6z" fill="#000" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
+  <svg class="c-text" width="24" height="24" viewBox="0 0 24 24"><path d="M8.5 4.5h2c.8 0 1.5.5 1.5.5s.7-.5 1.5-.5h2M8.5 19.5h2c.8 0 1.5-.5 1.5-.5s.7.5 1.5.5h2M12 5v14" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M8.5 4.5h2c.8 0 1.5.5 1.5.5s.7-.5 1.5-.5h2M8.5 19.5h2c.8 0 1.5-.5 1.5-.5s.7.5 1.5.5h2M12 5v14" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round"/></svg>
+  <span class="c-pointer"><i class="fas fa-hand-pointer" style="color:#fff"></i><i class="far fa-hand-pointer" style="color:#000"></i></span>
+</div>
+
+<script>
+(() => {
+  const params = new URLSearchParams(location.search);
+  const LOOP = params.get('loop') !== '0';
+  const SHOW_CLICKS = params.get('clicks') !== '0';
+  const SPEED = parseFloat(params.get('speed') || '1');
+  // render=1: driven frame by frame by the video renderer (virtual clock, camera cues, drawn caret)
+  const RENDER = params.get('render') === '1';
+  if (RENDER) document.documentElement.classList.add('ezdemo-render');
+
+  const $ = id => document.getElementById(id);
+  const cursor = $('ezdemoCursor');
+  const modal = $('ModalLoadItemsEdit');
+  let pos = { x: window.innerWidth * 0.62, y: window.innerHeight * 0.72 };
+  let runId = 0;
+
+  class Cancelled extends Error {}
+  const sleep = (ms, id) => new Promise((res, rej) => setTimeout(() => (id !== runId ? rej(new Cancelled()) : res()), ms / SPEED));
+  const placeCursor = () => { cursor.style.transform = `translate(${pos.x}px, ${pos.y}px)`; window.__ezpos = pos; };
+
+  // Camera cue for the video renderer: the camera glides to a fixed framing (zoom + center) over `dur` ms
+  let camSeq = 0;
+  function cam(zoom, at = { x: innerWidth / 2, y: innerHeight / 2 }, dur = 1600) {
+    window.__ezcam = { zoom, x: at.x, y: at.y, dur, id: ++camSeq };
+  }
+
+  // Native carets blink on the real clock; in render mode draw one that follows the virtual clock
+  let lastKey = -1e9;
+  const caret = document.createElement('div');
+  caret.id = 'ezdemoCaret';
+  document.body.appendChild(caret);
+  const measure = document.createElement('canvas').getContext('2d');
+  function drawCaret(now) {
+    const el = document.activeElement;
+    const ok = RENDER && el && el.tagName === 'INPUT' && el.type === 'text' && !el.classList.contains('ezdemo-date') && el.closest('.modal.show, #pageHeader');
+    if (!ok) { caret.style.display = 'none'; return; }
+    const cs = getComputedStyle(el), r = el.getBoundingClientRect();
+    measure.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    const text = cs.textTransform === 'uppercase' ? el.value.toUpperCase() : el.value;
+    const fs = parseFloat(cs.fontSize);
+    const x = r.left + parseFloat(cs.borderLeftWidth) + parseFloat(cs.paddingLeft) + measure.measureText(text).width;
+    const on = now - lastKey < 500 || Math.floor((now - lastKey - 500) / 530) % 2 === 1;
+    caret.style.cssText = `display:${on ? 'block' : 'none'}; left:${Math.round(x)}px; top:${r.top + (r.height - fs * 1.2) / 2}px; height:${fs * 1.2}px;`;
+  }
+  if (RENDER) (function tick(t) { drawCaret(t); requestAnimationFrame(tick); })(0);
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  function centerOf(el, dx = 0, dy = 0) {
+    const r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2 + dx, y: r.top + r.height / 2 + dy };
+  }
+
+  function moveTo(target, id, { mode = 'arrow', dur } = {}) {
+    const to = target.x !== undefined ? target : centerOf(target);
+    const from = { ...pos };
+    const dist = Math.hypot(to.x - from.x, to.y - from.y);
+    const ms = (dur ?? Math.min(1050, Math.max(380, 260 + dist * 0.75))) / SPEED;
+    const bend = (Math.random() - .5) * Math.min(80, dist * .18);
+    const start = performance.now();
+    return new Promise((res, rej) => {
+      const step = now => {
+        if (id !== runId) return rej(new Cancelled());
+        const t = Math.min(1, (now - start) / ms), k = ease(t);
+        const arc = Math.sin(Math.PI * k) * bend;
+        pos = { x: from.x + (to.x - from.x) * k - arc * (to.y - from.y) / (dist || 1), y: from.y + (to.y - from.y) * k + arc * (to.x - from.x) / (dist || 1) };
+        if (t > .55) cursor.dataset.mode = mode;
+        placeCursor();
+        t < 1 ? requestAnimationFrame(step) : res();
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  async function click(id) {
+    cursor.classList.add('press');
+    if (SHOW_CLICKS) {
+      const ring = document.createElement('div');
+      ring.className = 'ezdemo-ring';
+      ring.style.left = pos.x + 'px'; ring.style.top = pos.y + 'px';
+      document.body.appendChild(ring);
+      setTimeout(() => ring.remove(), 600);
+    }
+    await sleep(110, id);
+    cursor.classList.remove('press');
+    await sleep(90, id);
+  }
+
+  function focusField(el) {
+    document.querySelectorAll('.is-focus').forEach(e => e.classList.remove('is-focus'));
+    if (!el) return;
+    el.classList.add('is-focus');
+    el.focus({ preventScroll: true });
+  }
+
+  async function type(el, text, id, cps = 15) {
+    for (const ch of text) {
+      el.value += ch;
+      lastKey = performance.now();
+      await sleep(1000 / cps * (0.6 + Math.random() * 0.8), id);
+    }
+  }
+
+  // Chrome's date field fills mm, dd, yyyy segments as digits are typed
+  async function typeDate(el, mm, dd, yyyy, id) {
+    const seq = [`${mm[0]}`, mm, null, `${dd[0]}`, dd, null, yyyy.slice(0, 1), yyyy.slice(0, 2), yyyy.slice(0, 3), yyyy];
+    let m = 'mm', d = 'dd', y = 'yyyy', stage = 0;
+    for (const s of seq) {
+      if (s === null) { stage++; continue; }
+      if (stage === 0) m = s.padStart(2, '0'); else if (stage === 1) d = s.padStart(2, '0'); else y = s.padStart(4, '0');
+      el.value = `${m}/${d}/${y}`;
+      await sleep(85 + Math.random() * 70, id);
+    }
+  }
+
+  async function chooseSelect(sel, value, id) {
+    await moveTo(sel, id, { mode: 'arrow' });
+    await click(id);
+    focusField(sel);
+    await sleep(380, id);
+    sel.value = value;
+    await sleep(260, id);
+  }
+
+  // jQuery UI autocomplete menu, markup identical to the app's
+  function openAutocomplete(input, items) {
+    const r = input.getBoundingClientRect();
+    const ul = document.createElement('ul');
+    ul.className = 'ui-menu ui-widget ui-widget-content ui-autocomplete ui-front';
+    ul.style.cssText = `top:${r.bottom}px; left:${r.left}px; position:fixed;`;
+    ul.innerHTML = items.map(t => `<li class="ui-menu-item"><div class="ui-menu-item-wrapper">${t}</div></li>`).join('');
+    document.body.appendChild(ul);
+    ul.style.width = Math.max(ul.offsetWidth + 1, r.width) + 'px';
+    return ul;
+  }
+
+  // jquery-timepicker list (H:i, hourly) plus the Bootstrap "Early Time"/"Late Time" tooltip
+  function openTimepicker(input, label, scrollToHour = 7) {
+    const r = input.getBoundingClientRect();
+    const wrap = document.createElement('div');
+    wrap.className = 'ui-timepicker-wrapper';
+    wrap.style.cssText = `position:fixed; top:${r.bottom}px; left:${r.left}px;`;
+    wrap.innerHTML = '<ul class="ui-timepicker-list">' +
+      Array.from({ length: 24 }, (_, h) => `<li class="${h < 12 ? 'ui-timepicker-am' : 'ui-timepicker-pm'}" data-h="${h}">${String(h).padStart(2, '0')}:00</li>`).join('') + '</ul>';
+    document.body.appendChild(wrap);
+    wrap.scrollTop = wrap.querySelector('li').offsetHeight * scrollToHour;
+
+    const tip = document.createElement('div');
+    tip.className = 'tooltip fade bs-tooltip-top show';
+    tip.setAttribute('role', 'tooltip');
+    tip.innerHTML = `<div class="arrow"></div><div class="tooltip-inner">${label}</div>`;
+    document.body.appendChild(tip);
+    tip.style.cssText = `position:fixed; top:${r.top - tip.offsetHeight}px; left:${r.left + r.width / 2 - tip.offsetWidth / 2}px;`;
+    tip.querySelector('.arrow').style.left = (tip.offsetWidth / 2 - 6) + 'px';
+    return { wrap, tip };
+  }
+
+  async function pickZip(zipEl, prefix, items, pickIndex, fill, id) {
+    await moveTo(zipEl, id, { mode: 'text' });
+    await click(id);
+    focusField(zipEl);
+    await sleep(250, id);
+    await type(zipEl, prefix, id, 11);
+    await sleep(420, id);
+    const ul = openAutocomplete(zipEl, items);
+    await sleep(650, id);
+    const option = ul.querySelectorAll('.ui-menu-item-wrapper')[pickIndex];
+    await moveTo(option, id, { mode: 'arrow', dur: 520 });
+    option.classList.add('ui-state-active');
+    await sleep(320, id);
+    await click(id);
+    ul.remove();
+    zipEl.value = fill.zip;
+    $(fill.cityId).value = fill.city;
+    $(fill.stateId).value = fill.state;
+    await sleep(500, id);
+  }
+
+  async function pickTime(input, label, hour, id) {
+    await moveTo(input, id, { mode: 'text' });
+    await click(id);
+    focusField(input);
+    const { wrap, tip } = openTimepicker(input, label);
+    await sleep(600, id);
+    const li = wrap.querySelector(`li[data-h="${hour}"]`);
+    await moveTo(li, id, { mode: 'arrow', dur: 480 });
+    li.classList.add('ui-timepicker-selected');
+    await sleep(300, id);
+    await click(id);
+    wrap.remove(); tip.remove();
+    input.value = li.textContent;
+    await sleep(300, id);
+  }
+
+  async function fillText(el, text, id, cps) {
+    await moveTo(el, id, { mode: 'text' });
+    await click(id);
+    focusField(el);
+    await sleep(180, id);
+    await type(el, text, id, cps);
+    await sleep(220, id);
+  }
+
+  function scrollModal(to, ms, id) {
+    const from = modal.scrollTop, start = performance.now();
+    return new Promise((res, rej) => {
+      const step = now => {
+        if (id !== runId) return rej(new Cancelled());
+        const t = Math.min(1, (now - start) / (ms / SPEED));
+        modal.scrollTop = from + (to - from) * ease(t);
+        t < 1 ? requestAnimationFrame(step) : res();
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  function showModal() {
+    document.body.classList.add('modal-open');
+    const bd = document.createElement('div');
+    bd.className = 'modal-backdrop fade';
+    bd.id = 'ezdemoBackdrop';
+    document.body.appendChild(bd);
+    modal.style.display = 'block';
+    modal.scrollTop = 0;
+    void modal.offsetWidth;
+    bd.classList.add('show');
+    modal.classList.add('show');
+  }
+
+  function hideModal() {
+    modal.classList.remove('show');
+    modal.style.display = 'none';
+    document.body.classList.remove('modal-open');
+    $('ezdemoBackdrop')?.remove();
+  }
+
+  function reset() {
+    hideModal();
+    document.querySelectorAll('.ui-autocomplete, .ui-timepicker-wrapper, .tooltip, .ezdemo-ring').forEach(e => e.remove());
+    document.querySelectorAll('.is-hover, .is-focus').forEach(e => e.classList.remove('is-hover', 'is-focus'));
+    modal.querySelectorAll('input[type=text]').forEach(i => (i.value = ''));
+    modal.querySelectorAll('select').forEach(s => (s.selectedIndex = 0));
+    $('newRow').classList.add('d-none');
+    $('PleaseWait').className = 'PleaseWaitOff';
+    $('PleaseWaitMsg').className = 'PleaseWaitMsgOff';
+    document.activeElement?.blur();
+    pos = { x: window.innerWidth * 0.62, y: window.innerHeight * 0.72 };
+    cursor.dataset.mode = 'arrow';
+    placeCursor();
+  }
+
+  async function run(id) {
+    reset();
+    window.__ezdone = false;
+    const full = { x: innerWidth / 2, y: innerHeight / 2 };
+    cam(1, full, 0);
+    await sleep(1400, id);
+
+    // Open "New Load Posting"
+    const addPost = $('btnAddPost');
+    cam(1.25, centerOf(addPost, -260, 90));
+    await moveTo(addPost, id, { mode: 'pointer' });
+    addPost.classList.add('is-hover');
+    await sleep(250, id);
+    await click(id);
+    addPost.classList.remove('is-hover');
+    await sleep(350, id);
+    showModal();
+    // One steady framing on the form for the whole fill-in
+    cam(1.2, { x: innerWidth / 2, y: 405 });
+    await sleep(1100, id);
+
+    // Origin: country, then one zip lookup fills City + State + Zip
+    await chooseSelect($('oCountry'), 'US', id);
+    await pickZip($('oZip'), '3740',
+      ['37401', '37402', '37403', '37404', '37405', '37406', '37407', '37408', '37409'].map(z => `${z} [CHATTANOOGA, TN]`), 1,
+      { zip: '37402', city: 'CHATTANOOGA', state: 'TN', cityId: 'oCity', stateId: 'oState' }, id);
+
+    // Destination
+    await chooseSelect($('dCountry'), 'US', id);
+    await pickZip($('dZip'), '3140',
+      ['31401', '31402', '31403', '31404', '31405', '31406', '31407', '31408', '31409'].map(z => `${z} [SAVANNAH, GA]`), 0,
+      { zip: '31401', city: 'SAVANNAH', state: 'GA', cityId: 'dCity', stateId: 'dState' }, id);
+
+    // Dates & pickup window
+    await moveTo($('oDate'), id, { mode: 'text' });
+    await click(id); focusField($('oDate'));
+    await typeDate($('oDate'), '10', '29', '2026', id);
+    await sleep(250, id);
+    await pickTime($('oFrom'), 'Early Time', 8, id);
+    await moveTo($('dDate'), id, { mode: 'text' });
+    await click(id); focusField($('dDate'));
+    await typeDate($('dDate'), '10', '30', '2026', id);
+    await sleep(300, id);
+    focusField(null);
+    document.activeElement?.blur();
+
+    // Scroll a little to bring equipment and rate into view
+    await sleep(200, id);
+    await scrollModal(Math.min(220, modal.scrollHeight - modal.clientHeight), 700, id);
+    await sleep(250, id);
+
+    // Equipment, rate, capacity, miles
+    await chooseSelect($('equip'), '25', id);
+    await fillText($('rate'), '1925', id, 12);
+    await chooseSelect($('cap'), '1', id);
+    await fillText($('miles'), '310', id, 12);
+    focusField(null);
+    document.activeElement?.blur();
+
+    // Scroll to the item details
+    await sleep(300, id);
+    await scrollModal(modal.scrollHeight - modal.clientHeight, 1000, id);
+    await sleep(300, id);
+    await fillText($('lenFt'), '53', id, 10);
+    await fillText($('weight'), '42000', id, 13);
+    await fillText($('product'), 'Paper Goods', id, 16);
+    await fillText($('lbLenFt'), '53', id, 10);
+    focusField(null);
+    document.activeElement?.blur();
+
+    // Save
+    const save = $('btnSave');
+    await moveTo(save, id, { mode: 'pointer' });
+    save.classList.add('is-hover');
+    await sleep(300, id);
+    await click(id);
+    save.classList.remove('is-hover');
+    cam(1, full);
+    $('PleaseWait').className = 'PleaseWaitOn';
+    $('PleaseWaitMsg').className = 'PleaseWaitMsgOn';
+    await sleep(1150, id);
+    hideModal();
+    $('newRow').classList.remove('d-none');
+    $('PleaseWait').className = 'PleaseWaitOff';
+    $('PleaseWaitMsg').className = 'PleaseWaitMsgOff';
+    cursor.dataset.mode = 'arrow';
+
+    // Settle on the new posting
+    await sleep(700, id);
+    cam(1.3, centerOf($('newRow'), -150, 40));
+    await moveTo(centerOf($('newRow'), 120, 46), id, { mode: 'arrow', dur: 1100 });
+    await sleep(2600, id);
+    cam(1, full);
+    await sleep(2000, id);
+    window.__ezdone = true;
+  }
+
+  async function loop() {
+    const id = ++runId;
+    try {
+      do { await run(id); await sleep(800, id); } while (LOOP);
+    } catch (e) { if (!(e instanceof Cancelled)) throw e; }
+  }
+
+  function stop() { runId++; reset(); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'r' || e.key === 'R') loop();
+    if (e.key === 's' || e.key === 'S') stop();
+  });
+  window.ezdemo = { restart: loop, stop, showModal, hideModal };
+  placeCursor();
+  if (params.get('autoplay') !== '0') (document.fonts ? document.fonts.ready : Promise.resolve()).then(loop);
+})();
+</script>
+</body>
+</html>

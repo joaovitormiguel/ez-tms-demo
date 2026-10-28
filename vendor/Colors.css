@@ -1,0 +1,100 @@
+﻿.bg-ezloader-blue {
+	background-color: #1a2e5a;
+}
+
+.bg-ezloader-red {
+	background-color: #ee1e3a!important;
+}
+
+.border-black {
+	border-color: #000000!important;
+}
+
+.text-ezl {
+	/* color: #D76B39 !important; */
+	color:#6c757d  !important;
+}
+
+.bg-ezl-highlight {
+	color: #fff !important;
+	background-color: #dc3545 !important;
+	border-color: #343a40 !important;
+}
+
+.bg-ezl-green {
+	color: #fff !important;
+	background-color: #28a745 !important;
+	border-color: #343a40 !important;
+}
+
+.text-green {
+	color: #00cc00;
+}
+
+.text-unselected {
+	color: #e9ecef;
+}
+
+.bg-ezl-row-alt {
+	background-color: #dee2e6;
+}
+
+.bg-ezloader-sidebar {
+    background-color: #41474c !important;
+}
+
+.bg-ezloader-report {
+    background-color: #ffffff !important;
+}
+
+.text-blue {
+	color: #0000ab;
+}
+
+
+.bg-truckstop-red {
+	background-color: #B60A10 !important;
+	color: #FFFFFF;
+}
+
+.bg-dat-blue {
+	background-color: #0256B0 !important;
+	color: #FFFFFF;
+}
+
+.bg-ezloader-navy {
+	background-color: #192E5A !important;
+	color: #FFFFFF;
+}
+
+.bg-forrest-green {
+	background-color: #0F5011 !important;
+	color: #FFFFFF;
+}
+
+.text-truckstop-red {
+	color: #B60A10;
+}
+
+.text-dat-blue {
+	color: #0256B0;
+}
+
+.text-ezloader-navy {
+	color: #192E5A;
+}
+
+.text-forrest-green {
+	color: #0F5011;
+}
+
+.ezl-reports .card-header {
+	color: #fff;
+	background-color: var(--ezl-ls-bg-color); /*rgba(100, 149, 237,.4);*/
+}
+
+.ezl-report-row {
+	padding-top: 1px;
+	padding-bottom: 2px;
+}
+

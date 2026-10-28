@@ -1,0 +1,204 @@
+﻿.form-group {
+	margin-bottom: 0.5rem !important;
+}
+
+hr {
+	margin-left: 0;
+	border-top: 2px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.bg-primary {
+	background-color: #192E5A !important;
+}
+
+.nav-tabs {
+	border-bottom: 1px solid #565c62;
+}
+
+.nav-tabs .nav-item.show .nav-link, 
+.nav-tabs .nav-link.active, 
+.nav-tabs .nav-link.active:hover {
+    color: #ffffff;
+    border-color: #dee2e6 #dee2e6 #007bff;
+    background-color: #192E5A;
+}
+
+.nav-tabs .nav-link {
+	border: 1px solid #cccccc;
+	border-bottom-color: #565c62;
+	background-color: #565c62;
+	color: #ffffff;
+}
+
+.nav-tabs .nav-link:hover {
+	border-color: #777777 #777777 #dee2e6 #777777;
+	border-bottom-color: #898e93;
+	background-color: #898e93;
+	color: #ffffff;
+}
+
+.custom-checkbox .custom-control-label::before,
+.custom-radio .custom-control-label::before {
+	/* More contrast for BootStrap checkboxes and radio buttons */
+	border: solid 1px #aaaaaa;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before
+{
+	background-color: #192E5A;
+}
+
+.custom-checkbox .custom-control-input:disabled:checked ~ .custom-control-label::before {
+	background-color: #6C757D;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+	color: #fff;
+	background-color: #192E5A;
+}
+
+.form-control:focus {
+	border-color: #6c757d;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(108, 117, 125, 0.6);
+}
+
+.badge-black {
+    color: #fff;
+    background-color: #000;
+}
+
+.no-text-shadow
+{
+    text-shadow: none;
+}
+
+/* Bootstrap is adding 17px of padding for some reason. */
+
+div.modal[style] {
+	padding-right: 0px !important;
+}
+
+.info-feedback {
+	margin-top: .25rem;
+	font-size: 80%;
+	color: var(--bs-info-feedback); /*#2c3136;*/
+	font-style: italic;
+	font-weight: 700;
+	display: block;
+}
+
+.prevalidation-feedback, .prevalidation-feedback[style] {
+	margin-top: 0.25rem;
+	font-size: 80%;
+	color: #007bff !important;
+}
+
+.validation-feedback, .validation-feedback[style] {
+	margin-top: .25rem;
+	font-size: 80%;
+	color: #dc3545 !important;
+}
+
+ul.ui-menu li.ui-menu-item {
+	/* Make sure auto completes do not line wrap. */
+	white-space: nowrap;
+}
+
+.table .thead-dark th {
+	background-color: #3d444a;
+	/*color: var(--ezl-thead-dark-color);*/ /* #fff */
+	/*background-color: var(--ezl-thead-dark-color-bg);*/ /* #3d444a */
+}
+
+.card-header{
+	border-radius: var(--ezl-card-header-radius);
+	background-color: var(--ezl-card-header-color-bg); /*rgba(0, 0, 0, 0.03);*/
+	box-shadow: var(--ezl-card-header-shadow);
+}
+
+	.card-header.subcard {
+		background-color: #f7f7f7;
+	}
+
+	.card-header.subcard-header {
+		background-color: #6c757d;
+		color: white
+	}
+
+	.card-header.subcard-header-danger {
+		background-color: #821717;
+		color: white
+	}
+
+	.card-header.subcard-header-success {
+		background-color: #178217;
+		color: white
+	}
+
+
+.card {
+	box-shadow: 5px 5px 10px 0 rgba(100, 100, 100, 0.26);
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	border-radius: var(--ezl-card-radius);
+}
+
+.card-no-shadow {
+	box-shadow: none;
+	transition: none;
+}
+
+.card-section-header {
+	cursor: pointer;
+}
+
+.card-body-section-header {
+	padding: .75rem;
+	text-transform: uppercase;
+}
+
+.ui-autocomplete {
+	max-height: 300px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+ul.ui-autocomplete {
+	z-index: 1100;
+}
+
+/* Bootstrap Toggle v2.2.2 corrections for Bootsrtap 4 */
+
+.toggle-off {
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+}
+
+.toggle.off {
+	border-color: rgba(0, 0, 0, .25);
+}
+
+.toggle-handle {
+	background-color: white;
+	border: thin rgba(0, 0, 0, .25) solid;
+}
+
+@media (min-width: 768px) {
+    .modal-xl {
+        max-width: 90%;
+    }
+}
+
+/*.btn-dark {
+	color: #fff;
+	background-color: #28a745;*/ /*#00cc00;*/
+	/*border-color: #28a745;*/ /*#343a40;*/
+/*}
+
+	.btn-dark:hover {
+		color: #fff;
+		background-color: #218838;
+		border-color: #1e7e34;
+	}*/
+
+.card .card-body.title-card-body {
+	padding: unset !important;
+}
