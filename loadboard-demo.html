@@ -46,6 +46,9 @@
   .ezdemo-date::placeholder { color: #495057; opacity: 1; }
   .ezdemo-cal { position: absolute; right: 27px; top: 11px; width: 15px; height: 16px; pointer-events: none; }
 
+  /* The app draws the header search/clear icons in Font Awesome Pro "regular" (weight 400); the free set has no regular magnifier */
+  html:not(.ezdemo-fa-pro) .navbar-search-btn i { font-weight: 900 !important; }
+
   /* Hover/focus states the fake cursor can't trigger natively (values copied from Bootstrap 4.4.1) */
   .btn-primary.is-hover { background-color: #0069d9; border-color: #0062cc; }
   .form-control.is-focus { color: #495057; background-color: #fff; border-color: #80bdff; outline: 0; box-shadow: 0 0 0 .2rem rgba(0,123,255,.25); }
