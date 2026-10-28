@@ -863,11 +863,18 @@
   async function loop() {
     const id = ++runId;
     try {
-      do { await run(id); await sleep(800, id); } while (LOOP);
+      emit('playing');
+      do { await run(id); if (LOOP) await sleep(800, id); } while (LOOP);
+      emit('ended');
     } catch (e) { if (!(e instanceof Cancelled)) throw e; }
   }
 
-  function stop() { runId++; reset(); }
+  function stop() { runId++; reset(); emit('ready'); }
+
+  // Tell an embedding player page what the demo is doing (ready / playing / ended)
+  function emit(state) {
+    if (window.parent !== window) window.parent.postMessage({ source: 'ezdemo', state }, '*');
+  }
 
   document.addEventListener('keydown', e => {
     if (e.key === 'r' || e.key === 'R') loop();
@@ -875,7 +882,9 @@
   });
   window.ezdemo = { restart: loop, stop, showModal, hideModal };
   placeCursor();
-  if (params.get('autoplay') !== '0') (document.fonts ? document.fonts.ready : Promise.resolve()).then(loop);
+  const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+  if (params.get('autoplay') !== '0') fontsReady.then(loop);
+  else fontsReady.then(() => emit('ready'));
 })();
 </script>
 </body>
