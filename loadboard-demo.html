@@ -64,6 +64,41 @@
   #ezdemoCursor .c-pointer i { position: absolute; left: 0; top: 0; }
   #ezdemoCursor.press { transition: none; }
   #ezdemoCursor.press > * { scale: .88; }
+  /* Native <select> pop-up lookalikes */
+  .ezsel { position: fixed; z-index: 1200; overflow-y: auto; scrollbar-width: none; }
+  .ezsel::-webkit-scrollbar { display: none; }
+  .ezsel-item { white-space: nowrap; cursor: default; }
+  /* macOS menu (Chrome on Mac uses the system menu) */
+  .ezsel-mac { padding: 5px 0; border-radius: 7px; background: rgba(242, 242, 242, .82);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8);
+    box-shadow: 0 0 0 .5px rgba(0, 0, 0, .22), 0 10px 30px rgba(0, 0, 0, .25);
+    font: 13px/22px -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; color: #1d1d1f; }
+  .ezsel-mac .ezsel-item { position: relative; height: 22px; padding: 0 20px 0 26px; margin: 0 5px; border-radius: 4px; }
+  .ezsel-mac .ezsel-item.is-checked::before { content: "✓"; position: absolute; left: 9px; font-size: 12px; font-weight: 600; }
+  .ezsel-mac .ezsel-item.is-hover { background: #0a82ff; color: #fff; }
+  /* Chrome on Windows draws its own list */
+  .ezsel-win { background: #fff; border: 1px solid #767676; color: #000; box-shadow: 0 2px 6px rgba(0, 0, 0, .18); }
+  .ezsel-win .ezsel-item { padding: 1px 4px; line-height: 1.25; }
+  .ezsel-win .ezsel-item.is-hover { background: #0078d7; color: #fff; }
+
+  /* Chrome's date picker pop-up */
+  .ezcal { position: fixed; z-index: 1200; width: 246px; padding: 10px 10px 8px; background: #fff; color: #000;
+    border: 1px solid #767676; border-radius: 3px; box-shadow: 0 3px 10px rgba(0, 0, 0, .2);
+    font: 13px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; user-select: none; }
+  .ezcal-head { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 10px 4px; }
+  .ezcal-month { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; }
+  .ezcal-month svg { width: 8px; height: 5px; }
+  .ezcal-nav { display: flex; gap: 10px; color: #333; }
+  .ezcal-nav svg { width: 14px; height: 14px; }
+  .ezcal-week, .ezcal-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
+  .ezcal-week div { font-size: 12px; color: #000; padding-bottom: 6px; }
+  .ezcal-day { height: 28px; line-height: 28px; margin: 1px; border-radius: 2px; cursor: default; }
+  .ezcal-day.is-other { color: #8e8e8e; }
+  .ezcal-day.is-today { box-shadow: inset 0 0 0 1px #767676; }
+  .ezcal-day.is-hover { background: #e5e5e5; }
+  .ezcal-day.is-selected { background: #0075ff; color: #fff; box-shadow: none; }
+  .ezcal-foot { display: flex; justify-content: space-between; margin: 8px 4px 0; color: #0075ff; font-size: 13px; }
+
   .ezdemo-render input, .ezdemo-render textarea { caret-color: transparent !important; }
   #ezdemoCaret { position: fixed; display: none; width: 1px; background: #495057; z-index: 99998; pointer-events: none; }
   .ezdemo-ring { position: fixed; z-index: 99999; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%;
@@ -381,11 +416,47 @@
                       <div class="form-group row"><div class="col">
                         <select id="equip" class="form-control">
                           <option value="" selected>Equipment Type</option>
+                          <option value="1">Auto Carrier</option>
+                          <option value="48">CONESTOGA</option>
+                          <option value="2">Double Drop</option>
+                          <option value="41">DRIVE-AWAY</option>
+                          <option value="3">Dump Trailer</option>
                           <option value="4">Flatbed</option>
+                          <option value="5">Flatbed Hazardous</option>
+                          <option value="6">Flatbed or Step Deck</option>
+                          <option value="7">Flatbed or Van</option>
+                          <option value="53">FLATBED TEAM</option>
+                          <option value="8">Flatbed w/Pallet Exchange</option>
+                          <option value="9">Flatbed w/Sides</option>
+                          <option value="10">Flatbed w/Tarps</option>
+                          <option value="11">Flatbed/Van/Reefer</option>
+                          <option value="12">Hopper Bottom</option>
+                          <option value="13">Hotshot</option>
+                          <option value="45">LANDALL</option>
+                          <option value="14">Lowboy</option>
+                          <option value="15">Maxi</option>
+                          <option value="16">Power Only</option>
                           <option value="17">Reefer</option>
+                          <option value="18">Reefer Hazardous</option>
+                          <option value="19">Reefer or Van</option>
+                          <option value="20">Reefer w/Pallet Exchange</option>
+                          <option value="21">Reefer/Flatbed/Van</option>
+                          <option value="22">Removable Gooseneck</option>
                           <option value="23">Step Deck</option>
+                          <option value="37">STEPDECK WITH RAMPS</option>
+                          <option value="135">Straight Box Truck</option>
+                          <option value="24">Tanker</option>
                           <option value="25">Van</option>
                           <option value="27">Van Air-Ride</option>
+                          <option value="26">Van Hazardous</option>
+                          <option value="28">Van or Flatbed</option>
+                          <option value="29">Van or Reefer</option>
+                          <option value="30">Van Vented</option>
+                          <option value="31">Van w/Curtains</option>
+                          <option value="40">VAN W/LIFTGATE</option>
+                          <option value="32">Van w/Pallet Exchange</option>
+                          <option value="52">VAN W/TEAM</option>
+                          <option value="33">Van/Reefer/Flatbed</option>
                         </select>
                         <span class="requiredddl"></span>
                       </div></div>
@@ -566,7 +637,7 @@
   }
 
   function moveTo(target, id, { mode = 'arrow', dur } = {}) {
-    const to = target.x !== undefined ? target : centerOf(target);
+    const to = target instanceof Element ? centerOf(target) : target;
     const from = { ...pos };
     const dist = Math.hypot(to.x - from.x, to.y - from.y);
     const ms = (dur ?? Math.min(1050, Math.max(380, 260 + dist * 0.75))) / SPEED;
@@ -615,25 +686,140 @@
     }
   }
 
-  // Chrome's date field fills mm, dd, yyyy segments as digits are typed
-  async function typeDate(el, mm, dd, yyyy, id) {
-    const seq = [`${mm[0]}`, mm, null, `${dd[0]}`, dd, null, yyyy.slice(0, 1), yyyy.slice(0, 2), yyyy.slice(0, 3), yyyy];
-    let m = 'mm', d = 'dd', y = 'yyyy', stage = 0;
-    for (const s of seq) {
-      if (s === null) { stage++; continue; }
-      if (stage === 0) m = s.padStart(2, '0'); else if (stage === 1) d = s.padStart(2, '0'); else y = s.padStart(4, '0');
-      el.value = `${m}/${d}/${y}`;
-      await sleep(85 + Math.random() * 70, id);
+  // Browsers draw <select> and date pop-ups natively, outside the page, so these are lookalikes:
+  // macOS menus for Mac viewers, Chrome's own list on Windows, and Chrome's calendar on both.
+  const PLATFORM = params.get('platform') || (/Mac/.test(navigator.platform || navigator.userAgent) ? 'mac' : 'win');
+
+  // Highlight whichever pop-up item is under the demo cursor, like a real mouse hover
+  function trackHover(container, selector) {
+    (function tick() {
+      if (!container.isConnected) return;
+      const hit = document.elementFromPoint(pos.x, pos.y);
+      const item = hit && container.contains(hit) ? hit.closest(selector) : null;
+      container.querySelectorAll(`${selector}.is-hover`).forEach(e => e !== item && e.classList.remove('is-hover'));
+      if (item) item.classList.add('is-hover');
+      requestAnimationFrame(tick);
+    })();
+  }
+
+  function scrollElement(el, to, ms, id) {
+    const from = el.scrollTop, start = performance.now();
+    return new Promise((res, rej) => {
+      const step = now => {
+        if (id !== runId) return rej(new Cancelled());
+        const t = Math.min(1, (now - start) / (ms / SPEED));
+        el.scrollTop = from + (to - from) * ease(t);
+        t < 1 ? requestAnimationFrame(step) : res();
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  function openSelectPopup(sel) {
+    const r = sel.getBoundingClientRect();
+    const cur = sel.selectedIndex;
+    const pop = document.createElement('div');
+    pop.className = `ezsel ezsel-${PLATFORM}`;
+    pop.innerHTML = [...sel.options].map((o, i) =>
+      `<div class="ezsel-item${i === cur ? ' is-checked' : ''}" data-i="${i}">${o.text}</div>`).join('');
+    document.body.appendChild(pop);
+    const itemH = pop.querySelector('.ezsel-item').offsetHeight;
+    if (PLATFORM === 'mac') {
+      // macOS opens the menu so the current choice sits right over the control
+      pop.style.minWidth = `${r.width + 10}px`;
+      pop.style.left = `${r.left - 5}px`;
+      const pad = 5, full = pop.scrollHeight, maxH = innerHeight - 16;
+      const height = Math.min(full, maxH);
+      let top = r.top + (r.height - itemH) / 2 - pad - cur * itemH;
+      top = Math.min(Math.max(top, 8), innerHeight - 8 - height);
+      pop.style.top = `${top}px`;
+      pop.style.height = `${height}px`;
+    } else {
+      // Chrome on Windows drops a list the width of the control, up to 20 rows, flipping up if needed
+      pop.style.left = `${r.left}px`;
+      pop.style.width = `${r.width}px`;
+      pop.style.font = getComputedStyle(sel).font;
+      const height = Math.min(pop.scrollHeight, itemH * 20 + 2);
+      const below = innerHeight - r.bottom - 8;
+      pop.style.height = `${height}px`;
+      pop.style.top = `${height <= below ? r.bottom : Math.max(8, r.top - height)}px`;
+      pop.querySelector(`[data-i="${cur}"]`).classList.add('is-hover');
     }
+    trackHover(pop, '.ezsel-item');
+    return pop;
   }
 
   async function chooseSelect(sel, value, id) {
     await moveTo(sel, id, { mode: 'arrow' });
     await click(id);
     focusField(sel);
-    await sleep(380, id);
+    const pop = openSelectPopup(sel);
+    await sleep(420, id);
+    const idx = [...sel.options].findIndex(o => o.value === value);
+    const target = pop.querySelector(`[data-i="${idx}"]`);
+    const t = target.offsetTop, h = target.offsetHeight;
+    if (t + h > pop.scrollTop + pop.clientHeight - 8) {
+      await scrollElement(pop, Math.min(t - pop.clientHeight / 2, pop.scrollHeight - pop.clientHeight), 650, id);
+      await sleep(150, id);
+    }
+    await moveTo(centerOf(target, -target.offsetWidth / 2 + 70), id, { mode: 'arrow', dur: 520 });
+    await sleep(280, id);
+    await click(id);
+    pop.remove();
     sel.value = value;
-    await sleep(260, id);
+    await sleep(300, id);
+  }
+
+  // Chrome's calendar pop-up for <input type="date">
+  const TODAY = new Date(2026, 9, 28);
+  function openDatePicker(input, month) {
+    const r = input.getBoundingClientRect();
+    const first = new Date(month.getFullYear(), month.getMonth(), 1);
+    const start = new Date(first); start.setDate(1 - first.getDay());
+    const label = first.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const cells = Array.from({ length: 42 }, (_, i) => {
+      const d = new Date(start); d.setDate(start.getDate() + i);
+      const cls = ['ezcal-day'];
+      if (d.getMonth() !== first.getMonth()) cls.push('is-other');
+      if (d.toDateString() === TODAY.toDateString()) cls.push('is-today');
+      return `<div class="${cls.join(' ')}" data-date="${d.getMonth() + 1}/${d.getDate()}">${d.getDate()}</div>`;
+    }).join('');
+    const pop = document.createElement('div');
+    pop.className = 'ezcal';
+    pop.innerHTML = `
+      <div class="ezcal-head">
+        <div class="ezcal-month">${label}<svg viewBox="0 0 10 6"><path d="M0 0h10L5 6z" fill="currentColor"/></svg></div>
+        <div class="ezcal-nav">
+          <svg viewBox="0 0 12 12"><path d="M2.5 8 6 4.5 9.5 8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          <svg viewBox="0 0 12 12"><path d="M2.5 4 6 7.5 9.5 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        </div>
+      </div>
+      <div class="ezcal-week">${['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => `<div>${d}</div>`).join('')}</div>
+      <div class="ezcal-grid">${cells}</div>
+      <div class="ezcal-foot"><span>Clear</span><span>Today</span></div>`;
+    pop.style.left = `${r.left}px`;
+    pop.style.top = `${r.bottom + 1}px`;
+    document.body.appendChild(pop);
+    trackHover(pop, '.ezcal-day');
+    return pop;
+  }
+
+  async function pickDate(input, month, day, id) {
+    const icon = input.parentElement.querySelector('.ezdemo-cal');
+    await moveTo(icon, id, { mode: 'arrow' });
+    await click(id);
+    focusField(input);
+    const pop = openDatePicker(input, month);
+    await sleep(500, id);
+    const cell = pop.querySelector(`.ezcal-day:not(.is-other)[data-date="${month.getMonth() + 1}/${day}"]`);
+    await moveTo(cell, id, { mode: 'arrow', dur: 600 });
+    await sleep(300, id);
+    await click(id);
+    cell.classList.add('is-selected');
+    await sleep(120, id);
+    pop.remove();
+    input.value = `${String(month.getMonth() + 1).padStart(2, '0')}/${String(day).padStart(2, '0')}/${month.getFullYear()}`;
+    await sleep(300, id);
   }
 
   // jQuery UI autocomplete menu, markup identical to the app's
@@ -750,7 +936,7 @@
 
   function reset() {
     hideModal();
-    document.querySelectorAll('.ui-autocomplete, .ui-timepicker-wrapper, .tooltip, .ezdemo-ring').forEach(e => e.remove());
+    document.querySelectorAll('.ui-autocomplete, .ui-timepicker-wrapper, .tooltip, .ezdemo-ring, .ezsel, .ezcal').forEach(e => e.remove());
     document.querySelectorAll('.is-hover, .is-focus').forEach(e => e.classList.remove('is-hover', 'is-focus'));
     modal.querySelectorAll('input[type=text]').forEach(i => (i.value = ''));
     modal.querySelectorAll('select').forEach(s => (s.selectedIndex = 0));
@@ -797,15 +983,10 @@
       { zip: '31401', city: 'SAVANNAH', state: 'GA', cityId: 'dCity', stateId: 'dState' }, id);
 
     // Dates & pickup window
-    await moveTo($('oDate'), id, { mode: 'text' });
-    await click(id); focusField($('oDate'));
-    await typeDate($('oDate'), '10', '29', '2026', id);
-    await sleep(250, id);
+    const october = new Date(2026, 9, 1);
+    await pickDate($('oDate'), october, 29, id);
     await pickTime($('oFrom'), 'Early Time', 8, id);
-    await moveTo($('dDate'), id, { mode: 'text' });
-    await click(id); focusField($('dDate'));
-    await typeDate($('dDate'), '10', '30', '2026', id);
-    await sleep(300, id);
+    await pickDate($('dDate'), october, 30, id);
     focusField(null);
     document.activeElement?.blur();
 
