@@ -35,7 +35,10 @@
   .page { max-width: 1120px; margin: 0 auto; padding: 40px 16px 64px; }
 
   .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 10px; }
-  .eyebrow b { color: var(--red); font-weight: 700; }
+  .eyebrow { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  /* Brand guidelines: white/reversed full mark on dark backgrounds, minimum width 90px */
+  .eyebrow img { display: block; height: 28px; width: auto; }
+  .eyebrow .divider { width: 1px; height: 18px; background: rgba(255, 255, 255, .25); }
   h1 { font-size: clamp(24px, 3.4vw, 34px); line-height: 1.15; letter-spacing: -.01em; font-weight: 700; margin: 0 0 8px; }
   .lede { color: var(--text-muted); font-size: 16px; line-height: 1.5; margin: 0 0 24px; max-width: 720px; text-wrap: pretty; }
 
@@ -109,7 +112,7 @@
 </head>
 <body>
 <main class="page">
-  <p class="eyebrow"><b>EZ TMS</b> &nbsp;·&nbsp; Product demos</p>
+  <p class="eyebrow"><img src="img/ez-tms-logo-white.png" alt="EZ TMS" width="94" height="28"><span class="divider" aria-hidden="true"></span><span>Product demos</span></p>
   <h1 id="demoTitle">Loading…</h1>
   <p class="lede" id="demoDesc"></p>
 
